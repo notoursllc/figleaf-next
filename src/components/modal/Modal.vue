@@ -1,91 +1,90 @@
 <script>
-import Vue from 'vue';
-import VueHotkey from 'v-hotkey';
-import FigButton from '../button/Button';
-import { modalSizes } from './constants';
-
-Vue.use(VueHotkey);
-
 export default {
-    name: 'Modal',
+    name: 'Modal'
+}
+</script>
 
-    components: {
-        FigButton
+<script setup>
+import { ref } from 'vue';
+import { onClickOutside, onKeyStroke } from '@vueuse/core';
+import FigButton from '../button/Button.vue';
+import { modalSizes } from './constants.js';
+
+const props = defineProps({
+    size: {
+        type: String,
+        default: modalSizes.lg,
+        validator: (value) => Object.keys(modalSizes).includes(value)
     },
 
-    props: {
-        size: {
-            type: String,
-            default: modalSizes.lg,
-            validator: (value) => Object.keys(modalSizes).includes(value)
-        },
-
-        closeButton: {
-            type: Boolean,
-            default: true
-        },
-
-        escapeToClose: {
-            type: Boolean,
-            default: true
-        }
+    closeButton: {
+        type: Boolean,
+        default: true
     },
 
-    data() {
-        return {
-            visible: false
-        };
-    },
-
-    computed: {
-        widthClass() {
-            switch(this.size) {
-                case 'sm':
-                    return 'max-w-xs';
-
-                case 'lg':
-                    return 'max-w-3xl';
-
-                case 'xl':
-                    return 'max-w-6xl';
-
-                case 'full':
-                    return  'width_98';
-
-                default:
-                    return 'max-w-lg';
-            }
-        }
-    },
-
-    methods: {
-        emitVisible() {
-            this.$emit('visible', this.visible);
-        },
-
-        toggle() {
-            this.visible ? this.hide() : this.show();
-        },
-
-        show() {
-            this.visible = true;
-            document.body.style.overflow = 'hidden'; // prevent body from scrolling too (double scroll bars)
-            this.emitVisible();
-        },
-
-        hide() {
-            this.visible = false;
-            document.body.style.overflow = '';
-            this.emitVisible();
-        },
-
-        onEscape() {
-            if(this.escapeToClose) {
-                this.hide();
-            }
-        }
+    escapeToClose: {
+        type: Boolean,
+        default: true
     }
-};
+});
+
+const emit = defineEmits(['visible']);
+
+defineExpose({
+    show,
+    hide,
+    toggle
+});
+
+const visible = ref(false);
+const modalContainer = ref(null);
+
+function widthClass() {
+    switch(props.size) {
+        case modalSizes.sm:
+            return 'max-w-xs';
+
+        case modalSizes.lg:
+            return 'max-w-3xl';
+
+        case modalSizes.xl:
+            return 'max-w-6xl';
+
+        case modalSizes.full:
+            return  'width_98';
+
+        default:
+            return 'max-w-lg';
+    }
+}
+
+function emitVisible() {
+    emit('visible', visible.value);
+}
+
+function hide() {
+    visible.value = false;
+    document.body.style.overflow = '';
+    emitVisible();
+}
+
+function show() {
+    visible.value = true;
+    document.body.style.overflow = 'hidden'; // prevent body from scrolling too (double scroll bars)
+    emitVisible();
+}
+
+function toggle() {
+    visible.value ? hide() : show();
+}
+
+function onEscape() {
+    if(props.escapeToClose) {
+        hide();
+    }
+}
+
+onKeyStroke('esc', onEscape, { target: modalContainer.value })
 </script>
 
 
@@ -93,8 +92,8 @@ export default {
     <div>
         <div
             v-if="visible"
-            class="overflow-x-hidden overflow-y-auto fixed top-0 left-0 w-full h-full z-50 outline-none focus:outline-none"
-            v-hotkey="{'esc': onEscape}">
+            ref="modalContainer"
+            class="overflow-x-hidden overflow-y-auto fixed top-0 left-0 w-full h-full z-50 outline-none focus:outline-none">
 
             <!--content-->
             <div
@@ -105,7 +104,7 @@ export default {
                 <div
                     v-if="$slots.header || closeButton"
                     class="flex items-center justify-between py-2 px-5 border-b border-solid border-gray-300 rounded-t-sm">
-                    <div class="text-md font-semibold break-words">
+                    <div class="text-base font-semibold break-words">
                         <slot name="header"></slot>
                     </div>
 
@@ -118,7 +117,7 @@ export default {
                 </div>
 
                 <!--body-->
-                <div class="relative py-4 px-5 flex-auto text-md text-gray-600 break-words">
+                <div class="relative py-4 px-5 flex-auto text-base text-gray-600 break-words">
                     <slot></slot>
                 </div>
 

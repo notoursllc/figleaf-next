@@ -12,7 +12,6 @@ import FigAddress from '../address/Address.vue';
 import FigButton from '../button/Button.vue';
 import FigFormRadio from '../form/radio/FormRadio.vue';
 
-
 const props = defineProps({
     originalLine1: {
         type: String
@@ -136,7 +135,7 @@ watch(
         size="md"
         :close-button="false"
         :escape-to-close="false">
-        <template slot="header">
+        <template v-slot:header>
             {{ $t("Confirm your address") }}:
         </template>
 

@@ -152,13 +152,14 @@ export default {
                             <fig-pop-confirm @confirm="onClickDeleteRow(index)">
                                 {{ $t('Delete this row?') }}
 
-                                <fig-button
-                                    slot="reference"
-                                    class="ml-4"
-                                    variant="plain"
-                                    icon="trash"
-                                    size="sm"
-                                    dotted />
+                                <template v-slot:reference>
+                                    <fig-button
+                                        class="ml-4"
+                                        variant="plain"
+                                        icon="trash"
+                                        size="sm"
+                                        dotted />
+                                </template>
                             </fig-pop-confirm>
                         </div>
                     </div>

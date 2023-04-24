@@ -101,23 +101,24 @@ export default {
 
         <slot></slot>
 
-        <div
-            v-if="showConfirmButton || showCancelButton"
-            slot="footer"
-            class="flex items-center justify-end flex-nowrap">
-            <fig-button
-                v-if="showCancelButton"
-                variant="link"
-                size="sm"
-                @click="onCancelClick"
-                :ref="cancelRef">{{ cancelLabel }}</fig-button>
+        <template v-slot:footer>
+            <div
+                v-if="showConfirmButton || showCancelButton"
+                class="flex items-center justify-end flex-nowrap">
+                <fig-button
+                    v-if="showCancelButton"
+                    variant="link"
+                    size="sm"
+                    @click="onCancelClick"
+                    :ref="cancelRef">{{ cancelLabel }}</fig-button>
 
-            <fig-button
-                v-if="showConfirmButton"
-                variant="primary"
-                size="sm"
-                @click="onConfirmClick"
-                :ref="confirmRef">{{ confirmLabel }}</fig-button>
-        </div>
+                <fig-button
+                    v-if="showConfirmButton"
+                    variant="primary"
+                    size="sm"
+                    @click="onConfirmClick"
+                    :ref="confirmRef">{{ confirmLabel }}</fig-button>
+            </div>
+        </template>
     </fig-popover>
 </template>

@@ -8,11 +8,12 @@ export default {
 import { ref, computed } from 'vue';
 import { vOnKeyStroke } from '@vueuse/components';
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
+import useConfirm from './useConfirm.js';
 
-const confirm = inject('FigConfirm');
-
+const confirm = useConfirm();
 const footer_buttons = ref(null);
 const btn_confirm_cancel = ref(null);
+
 const { activate, deactivate } = useFocusTrap(
     footer_buttons,
     {
@@ -61,7 +62,6 @@ function onReject() {
 };
 
 async function onFadeEnter() {
-    await nextTick();
     activate();
 }
 </script>
@@ -80,7 +80,7 @@ async function onFadeEnter() {
                 <!--content-->
                 <div class="relative w-full">
                     <div
-                        class="relative mx-auto border-0 rounded-md shadow-tight bg-white outline-none focus:outline-none"
+                        class="fig-confirm-content shadow-tight"
                         :class="widthClass">
 
                         <div class="p-5">
@@ -102,7 +102,7 @@ async function onFadeEnter() {
                                 type="button"
                                 class="confirm-btn-right hover:bg-gray-200"
                                 ref="btn_confirm_cancel"
-                                @click="onReject">{{ cancelLabel || $t('Cancel') }}</button>
+                                @click="onReject">{{ cancelLabel || $t('cancel') }}</button>
 
                             <button
                                 type="button"
@@ -130,12 +130,29 @@ async function onFadeEnter() {
     @apply flex items-center overflow-x-hidden overflow-y-auto fixed top-0 left-0 w-full h-full z-50 outline-none focus:outline-none;
 }
 
+.fig-confirm-content {
+    @apply relative mx-auto border-0 rounded-md bg-white outline-none focus:outline-none;
+}
+
+.fig-confirm-content-sm {
+    @apply max-w-xs;
+}
+.fig-confirm-content-md {
+    @apply max-w-lg;
+}
+.fig-confirm-content-lg {
+    @apply max-w-2xl;
+}
+.fig-confirm-content-xl {
+    @apply max-w-5xl;
+}
+
 .fig-confirm-title {
     @apply pb-2 break-words font-semibold;
 }
 
 .fig-confirm-body {
-    @apply relative flex-auto text-md text-gray-600 break-words text-center;
+    @apply relative flex-auto text-base text-gray-600 break-words text-center;
 }
 
 .footer-container {

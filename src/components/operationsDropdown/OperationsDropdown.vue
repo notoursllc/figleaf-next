@@ -59,7 +59,7 @@ export default {
 
 <template>
     <fig-dropdown placement="bottom" v-if="canShow">
-        <span slot="toggler" slot-scope="props">
+        <span v-slot:toggler="props">
             <fig-button
                 v-bind="props.ariaAttrs"
                 variant="plain"

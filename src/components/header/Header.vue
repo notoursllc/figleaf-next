@@ -118,27 +118,27 @@ export default {
                                     @visible="onPopoverVisible"
                                     :ref="popoverRef">
 
-                                    <div
-                                        slot="toggler"
-                                        class="whitespace-nowrap text-lg lg:text-xl cursor-pointer">(<a class="text-blue-500">{{ numCartItems }}&nbsp;{{ $tc('item_items', numCartItems) }}</a>)</div>
+                                    <template v-slot:toggler>
+                                        <div class="whitespace-nowrap text-lg lg:text-xl cursor-pointer">(<a class="text-blue-500">{{ numCartItems }}&nbsp;{{ $tc('item_items', numCartItems) }}</a>)</div>
+                                    </template>
 
                                     <div class="p-2 text-center">{{ $t('Return to your Shopping Cart?') }}</div>
 
-                                    <div
-                                        slot="footer"
-                                        class="flex items-center justify-center">
-                                        <fig-button
-                                            variant="plain"
-                                            size="sm"
-                                            @click="hidePopover"
-                                            class="mr-1"
-                                            :ref="popoverCancelButtonRef">{{ $t('cancel') }}</fig-button>
+                                    <template v-slot:footer>
+                                        <div class="flex items-center justify-center">
+                                            <fig-button
+                                                variant="plain"
+                                                size="sm"
+                                                @click="hidePopover"
+                                                class="mr-1"
+                                                :ref="popoverCancelButtonRef">{{ $t('cancel') }}</fig-button>
 
-                                        <fig-button
-                                            variant="primary"
-                                            size="sm"
-                                            @click="onReturnToCartClick">{{ $t('Yes, return to cart') }}</fig-button>
-                                    </div>
+                                            <fig-button
+                                                variant="primary"
+                                                size="sm"
+                                                @click="onReturnToCartClick">{{ $t('Yes, return to cart') }}</fig-button>
+                                        </div>
+                                    </template>
                                 </fig-popover>
                             </div>
                         </template>

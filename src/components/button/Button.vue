@@ -6,8 +6,8 @@ export default {
 
 <script setup>
 import { computed, useSlots } from 'vue';
-import FigIcon from '../icon/FigIcon';
-import FigSpinner from '../spinner/Spinner';
+import FigIcon from '../icon/FigIcon.vue';
+import FigSpinner from '../spinner/Spinner.vue';
 import {
     buttonSizes,
     buttonVariants,
@@ -180,7 +180,6 @@ const classNames = computed(() => {
                     !slots.default ? 'p-4' :'py-3 px-6'
                 );
             }
-            classes.push('text-md');
             break;
 
         default:
@@ -189,7 +188,7 @@ const classNames = computed(() => {
                     !slots.default ? 'p-2' : 'py-2 px-3'
                 );
             }
-            classes.push('text-md leading-tight');
+            classes.push('text-base leading-tight');
     }
 
     return classes;

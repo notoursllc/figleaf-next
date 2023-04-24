@@ -6,7 +6,7 @@
 
 import { ref, computed, watch } from 'vue';
 import { createPopper } from '@popperjs/core';
-import VNodes from '@/components/vNodes/VNodes.js';
+import VNodes from '../vNodes/VNodes.vue';
 import useDropdown from './useDropdown.js';
 import { onClickOutside, onKeyStroke } from '@vueuse/core';
 // import { vOnKeyStroke, OnClickOutside } from '@vueuse/components'; // https://vueuse.org/core/onKeyStroke/#onkeystroke

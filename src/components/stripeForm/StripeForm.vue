@@ -123,27 +123,33 @@ export default {
             <!-- card -->
             <div class="my-2 px-2 w-full overflow-hidden md:w-1/2">
                 <fig-form-group>
-                    <template slot="label">{{ $t('Card number') }}</template>
+                    <template v-slot:label>{{ $t('Card number') }}</template>
                     <div id="card-number" class="form-input w-full fig-form-control fig-form-control-lg rounded"></div>
-                    <div slot="error" v-show="validation.error.card">{{ validation.error.card }}</div>
+                    <template v-slot:error>
+                        <div v-show="validation.error.card">{{ validation.error.card }}</div>
+                    </template>
                 </fig-form-group>
             </div>
 
             <!-- expiration -->
             <div class="my-2 px-2 w-full overflow-hidden md:w-1/4">
                 <fig-form-group>
-                    <template slot="label">{{ $t('Expiration date') }}</template>
+                    <template v-slot:label>{{ $t('Expiration date') }}</template>
                     <div id="card-expiry" class="form-input w-full fig-form-control fig-form-control-lg rounded"></div>
-                    <div slot="error" v-show="validation.error.expiry">{{ validation.error.expiry }}</div>
+                    <template v-slot:error>
+                        <div v-show="validation.error.expiry">{{ validation.error.expiry }}</div>
+                    </template>
                 </fig-form-group>
             </div>
 
             <!-- security code -->
             <div class="my-2 px-2 w-full overflow-hidden md:w-1/4">
                 <fig-form-group>
-                    <template slot="label">{{ $t('Security code') }}</template>
+                    <template v-slot:label>{{ $t('Security code') }}</template>
                     <div id="card-cvc" class="form-input w-full fig-form-control fig-form-control-lg rounded"></div>
-                    <div slot="error" v-show="validation.error.cvc">{{ validation.error.cvc }}</div>
+                    <template v-slot:error>
+                        <div v-show="validation.error.cvc">{{ validation.error.cvc }}</div>
+                    </template>
                 </fig-form-group>
             </div>
         </div>

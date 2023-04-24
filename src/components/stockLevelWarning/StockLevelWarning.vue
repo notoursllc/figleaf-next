@@ -36,12 +36,13 @@ export default {
     <fig-icon-label
         v-if="qty <= threshold"
         class="text-amber-600">
-        <fig-icon
-            slot="left"
-            icon="urgent"
-            width="28"
-            height="28"
-            stroke="#fd7e14"
-            :stroke-width="1" /> {{ message }}
+        <template v-slot:left>
+            <fig-icon
+                icon="urgent"
+                width="28"
+                height="28"
+                stroke="#fd7e14"
+                :stroke-width="1" /> {{ message }}
+        </template>
     </fig-icon-label>
 </template>

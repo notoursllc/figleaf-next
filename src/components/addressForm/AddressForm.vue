@@ -372,10 +372,10 @@ export default {
                         @input="(val) => { $v.form.email.$touch() }"
                         :state="inputState('email')" />
 
-                    <div slot="error" v-show="canShowValidationMsg('email')">
+                    <template v-slot:error v-show="canShowValidationMsg('email')">
                         <div v-if="$v.form.email.hasOwnProperty('required') && !$v.form.email.required">{{ $t('Required') }}</div>
                         <div v-if="!$v.form.email.email">{{ $t('Please enter a valid email address.') }}</div>
-                    </div>
+                    </template>
                 </fig-form-group>
             </div>
 
@@ -402,7 +402,7 @@ export default {
                             ]" />
 
                         <fig-tooltip :centered="false">
-                            <template slot="toggler">
+                            <template v-slot:toggler>
                                 <div class="pl-1">
                                     <fig-icon
                                         icon="info-circle"

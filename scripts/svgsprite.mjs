@@ -3,19 +3,22 @@ import { dirname } from 'path';
 import svgstore from 'svgstore';
 import fs from 'fs';
 import path from 'path';
-import glob from 'glob';
 import chalk from 'chalk';
-import { promisify } from 'util';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const globAsync = promisify(glob);
+// const globAsync = promisify(glob);
+
+const svgSpritePath = path.resolve(__dirname, '../src/components/icon/svg');
+
+function getSvgFileNames() {
+    const svgSpriteFiles = fs.readdirSync(svgSpritePath);
+    return svgSpriteFiles.map((file) => file.replace('.svg', ''));
+}
+
 
 const svgSprite = async () => {
-    const svgSpritePath = path.resolve(__dirname, '../src/components/icon/svg');
-    const svgSpriteFiles = await globAsync('**/*.svg', { cwd: svgSpritePath });
-
     let sprites = svgstore({
         copyAttrs: true,
         svgAttrs: {
@@ -25,9 +28,11 @@ const svgSprite = async () => {
         },
     });
 
-    svgSpriteFiles.forEach((file) => {
-        const svg = fs.readFileSync(path.resolve(svgSpritePath, file), 'utf8');
-        const fileName = file.replace('.svg', '');
+    const fileNames = getSvgFileNames();
+
+    fileNames.forEach((fileName) => {
+        const svg = fs.readFileSync(path.resolve(svgSpritePath, `${fileName}.svg`), 'utf8');
+
         sprites.add(
             fileName,
             svg,
@@ -51,4 +56,19 @@ const svgSprite = async () => {
     console.log(chalk.green('SVG Sprite generated'));
 }
 
+
+async function svgList() {
+    const files = getSvgFileNames();
+
+    let content = '/** THIS FILE IS GENERATED. DO NO EDIT MANUALLY */\r\n';
+    content += `export default ${JSON.stringify(files)};`;
+
+    fs.writeFileSync(
+        path.resolve(__dirname, '../src/components/icon/svgFileNames.js'),
+        content
+    );
+}
+
+
+svgList();
 svgSprite();

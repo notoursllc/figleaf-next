@@ -1,97 +1,104 @@
-
-
 <script>
 export default {
-    name: 'FIcon',
-
-    functional: true,
-
-    render(h, ctx) {
-        const icon = ctx.props.icon;
-        const classes = ['fig-icon', `fig-icon-${icon}`, ctx.data.staticClass];
-
-        if(ctx.props.spin) {
-            classes.push('icon-spin');
-        }
-
-        // delete the 'icon' prop... no need to add that prop to the attributes:
-        delete ctx.props.icon;
-
-        const attributes = {
-            width: 20,
-            height: 20,
-            'stroke-linecap': 'round',
-            'stroke-linejoin': 'round',
-            'aria-hidden': 'true',
-            role: 'presentation',
-            focusable: 'false',
-            fill: 'none',
-            'data-icon': icon // adding this allow for special case css styling, tests, etc
-        };
-
-        Object.keys(ctx.props).forEach((prop) => {
-            const val = ctx.props[prop];
-
-            switch(prop) {
-                case 'strokeWidth':
-                    attributes['stroke-width'] = val;
-                    break;
-
-                case 'strokeLinecap':
-                    attributes['stroke-linecap'] = val;
-                    break;
-
-                case 'strokeLinejoin':
-                    attributes['stroke-linecap'] = val;
-                    break;
-
-                // everything else is free to be added as-is
-                default:
-                    attributes[prop] = val;
-            }
-        });
-
-        if(!attributes.stroke && (!attributes.fill || attributes.fill === 'none')) {
-            let strokeColor = '#565656';
-
-            switch(ctx.props.variant) {
-                case 'warning':
-                    strokeColor = '#e6a23c';
-                    break;
-
-                case 'danger':
-                    strokeColor = '#e55353';
-                    break;
-
-                case 'success':
-                    strokeColor = '#2eb85c';
-                    break;
-            }
-
-            attributes.stroke = strokeColor;
-        }
-        if(attributes.stroke && !attributes['stroke-width']) {
-            attributes['stroke-width'] = '2px';
-        }
-
-        return h(
-            'svg',
-            {
-                class: classes,
-                on: ctx.listeners,
-                attrs: attributes
-            },
-            [
-                h(
-                    'use',
-                    {
-                        attrs: {
-                            'xlink:href': `#${icon}`
-                        }
-                    }
-                )
-            ]
-        );
-    }
-};
+    name: 'FIcon'
+}
 </script>
+
+<script setup>
+import { computed } from 'vue';
+import {
+    figIconVariants,
+    figIconStrokeColors
+ } from './constants.js';
+
+const props = defineProps({
+    icon: {
+        type: String,
+        required: true
+    },
+
+    variant: {
+        type: String,
+        default: null,
+        validator: (value) => Object.keys(figIconVariants).includes(value)
+    },
+
+    spin: {
+        type: Boolean,
+        default: false
+    },
+
+    strokeWidth: {
+        type: [String, Number],
+        default: '1.5'
+    },
+
+    strokeLinecap: {
+        type: String,
+        default: null
+    },
+
+    strokeLinejoin: {
+        type: String,
+        default: null
+    },
+
+    stroke: {
+        type: String,
+        default: null
+    },
+
+    width: {
+        type: [String, Number],
+        default: 20
+    },
+
+    height: {
+        type: [String, Number],
+        default: 20
+    }
+});
+
+const classes = computed(() => {
+    return {
+        'icon-spin': props.spin
+    };
+});
+
+const strokeColor = computed(() => {
+    if(props.stroke) {
+        return props.stroke;
+    }
+
+    if(props.variant) {
+        return figIconStrokeColors[props.variant];
+    }
+
+    return figIconStrokeColors.default;
+});
+</script>
+
+
+<template>
+    <svg
+        :class="classes"
+        :width="props.width"
+        :height="props.height"
+        :stroke-linecap="props.strokeLinecap"
+        :stroke-linejoin="props.strokeLinejoin"
+        :stroke-width="props.strokeWidth"
+        :stroke="strokeColor"
+        fill="none"
+        aria-hidden="true"
+        role="presentation"
+        focusable="false">
+        <use :xlink:href="`#${props.icon}`"></use>
+    </svg>
+</template>
+
+
+<style scoped>
+.icon-spin {
+    animation: spin 1s linear infinite;
+}
+</style>

@@ -1,27 +1,29 @@
 <script>
+export default {
+    name: 'Spinner'
+}
+</script>
+
+<script setup>
 import { spinnerStrokeWidths } from './constants';
 
-export default {
-    name: 'Spinner',
+const props = defineProps({
+    color: {
+        type: String,
+        default: '#44403c'
+    },
 
-    props: {
-        color: {
-            type: String,
-            default: '#44403c'
-        },
+    width: {
+        type: Number,
+        default: 30
+    },
 
-        width: {
-            type: Number,
-            default: 30
-        },
-
-        strokeWidth: {
-            type: Number,
-            default: 2,
-            validator: (value) => spinnerStrokeWidths.includes(value)
-        }
+    strokeWidth: {
+        type: Number,
+        default: 2,
+        validator: (value) => spinnerStrokeWidths.includes(value)
     }
-};
+});
 </script>
 
 
