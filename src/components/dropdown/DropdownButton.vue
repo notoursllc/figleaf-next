@@ -1,6 +1,7 @@
 <script>
 export default {
-    name: 'DropdownButton'
+    name: 'DropdownButton',
+    inheritAttrs: false
 }
 </script>
 
@@ -11,13 +12,6 @@ const props = defineProps({
         default: false
     }
 });
-
-const emit = defineEmits(['click']);
-
-function onClick(e) {
-    e.preventDefault();
-    emit('click', e);
-};
 </script>
 
 
@@ -25,12 +19,18 @@ function onClick(e) {
     <div class="hover:bg-gray-100">
         <button
             type="button"
-            class="border-0 py-2 px-4 text-sm font-normal block w-full whitespace-nowrap bg-transparent text-gray-600"
+            class="fig-dropdown-button focus:outline-none"
             :class="{'text-center': centered, 'text-left': !centered}"
             role="menuitem"
-            v-on="$listeners"
-            @click="onClick">
+            v-bind="$attrs">
             <slot></slot>
         </button>
     </div>
 </template>
+
+
+<style scoped>
+.fig-dropdown-button {
+    @apply border-0 py-2 px-4 text-sm font-normal block w-full whitespace-nowrap bg-transparent text-gray-600;
+}
+</style>

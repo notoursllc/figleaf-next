@@ -9,6 +9,24 @@ export default function useI18n() {
             },
             decimal: {
                 style: 'decimal',
+                useGrouping: true,
+                // minimumFractionDigits: 2,
+                // maximumFractionDigits: 2,
+            },
+            percent: {
+                style: 'percent',
+                useGrouping: true
+            }
+        },
+        'pt-BR': {
+            currency: {
+                style: 'currency',
+                currency: 'BRL',
+                currencyDisplay: 'symbol'
+            },
+            decimal: {
+                style: 'decimal',
+                useGrouping: true,
                 // minimumFractionDigits: 2,
                 // maximumFractionDigits: 2,
             },

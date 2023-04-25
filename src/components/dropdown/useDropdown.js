@@ -22,11 +22,6 @@ export default function useDropdown() {
             default: 'bottom-start'
         },
 
-        show: {
-            type: Boolean,
-            default: false
-        },
-
         disabled: {
             type: Boolean,
             default: false
