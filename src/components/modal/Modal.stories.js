@@ -37,7 +37,7 @@ const Template = (args, { argTypes }) => ({
     },
     template: `
         <div>
-            <fig-modal v-bind="$props" ref="storymodal">
+            <fig-modal v-bind="args" ref="storymodal">
                 <template v-slot:header>modal header</template>
                 modal content
             </fig-modal>

@@ -5,8 +5,8 @@ export default {
 </script>
 
 <script setup>
-import { ref } from 'vue';
-import { onClickOutside, onKeyStroke } from '@vueuse/core';
+import { ref, onMounted } from 'vue';
+import { onKeyStroke } from '@vueuse/core';
 import FigButton from '../button/Button.vue';
 import { modalSizes } from './constants.js';
 
@@ -84,7 +84,9 @@ function onEscape() {
     }
 }
 
-onKeyStroke('esc', onEscape, { target: modalContainer.value })
+onMounted(() => {
+    onKeyStroke('Escape', onEscape, { target: document });
+});
 </script>
 
 
