@@ -59,6 +59,12 @@ export default function useDate() {
 
 
     function dateObjectToZonedDateObject(d, timezone) {
+        if(!d) {
+            return null;
+        }
+
+        console.log('dateObjectToZonedDateObject', d)
+
         const browserDate = d || new Date();
 
         // Date.UTC() returns the number of milliseconds in a Date object since January 1, 1970, 00:00:00, universal time.
@@ -161,13 +167,20 @@ export default function useDate() {
     }
 
 
+    function isDateObject(val) {
+        return val && val instanceof Date;
+        // return val && Object.prototype.toString.call(val) === '[object Date]';
+    }
+
+
     return {
         addLeadingZero,
         dateTo8601,
         dateObjectToZonedDateObject,
         dateObjectToUtcDateObject,
         updateSecondsOfIso8601,
-        format8601
+        format8601,
+        isDateObject
     }
 
 }

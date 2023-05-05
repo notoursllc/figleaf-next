@@ -8,29 +8,42 @@ import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 describe('DateUtils', () => {
 
     // playground
-    // it('utcToZonedTime', () => {
-    //     const date = utcToZonedTime('2021-01-01T00:00:00', 'America/Los_Angeles')
-    //     console.log("utcToZonedTime", date);
-    //     console.log(date.getHours())
-    // });
-    it('zonedTimeToUtc', () => {
-        const { dateTo8601, dateObjectToUtcDateObject } = TestUtils.mockLoadComposableInApp( () => useDate() );
+    it('utcToZonedTime', () => {
+        // const date = utcToZonedTime('2021-01-01T00:00:00', 'America/Los_Angeles')
+        const date = utcToZonedTime('2021-01-01T00:00:00', 'UTC');
 
-        const date = new Date();
-        date.setFullYear(2021);
-        date.setMonth(0);
-        date.setDate(1);
-        date.setHours(8);
-        date.setMinutes(0);
-        date.setSeconds(0);
-        date.setMilliseconds(0);
+        console.log("utcToZonedTime3", date);
+        console.log(date.getHours())
 
-        const zonedDate = zonedTimeToUtc(date, 'America/Los_Angeles')
-        console.log("zonedTimeToUtc", zonedDate);
-        console.log("zonedTimeToUtc toISOString", zonedDate.toISOString().replace('Z', ''));
-        console.log("zonedTimeToUtc dateTo8601", dateTo8601(zonedDate));
-        // console.log("dateObjectToUtcDateObject", dateObjectToUtcDateObject(date).toISOString());
+        const browserDate = new Date('2021-01-01T00:00:00');
+        const utc = Date.UTC(
+            browserDate.getFullYear(),
+            browserDate.getMonth(),
+            browserDate.getDate(),
+            browserDate.getHours(),
+            browserDate.getMinutes(),
+            browserDate.getSeconds(),
+        );
+        console.log("utc", utc);
     });
+    // it('zonedTimeToUtc', () => {
+    //     const { dateTo8601, dateObjectToUtcDateObject } = TestUtils.mockLoadComposableInApp( () => useDate() );
+
+    //     const date = new Date();
+    //     date.setFullYear(2021);
+    //     date.setMonth(0);
+    //     date.setDate(1);
+    //     date.setHours(8);
+    //     date.setMinutes(0);
+    //     date.setSeconds(0);
+    //     date.setMilliseconds(0);
+
+    //     const zonedDate = zonedTimeToUtc(date, 'America/Los_Angeles')
+    //     console.log("zonedTimeToUtc", zonedDate);
+    //     console.log("zonedTimeToUtc toISOString", zonedDate.toISOString().replace('Z', ''));
+    //     console.log("zonedTimeToUtc dateTo8601", dateTo8601(zonedDate));
+    //     // console.log("dateObjectToUtcDateObject", dateObjectToUtcDateObject(date).toISOString());
+    // });
 
 
     describe('addLeadingZero()', () => {

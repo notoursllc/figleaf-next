@@ -15,7 +15,8 @@ const Template = (args, { argTypes }) => ({
         FigFormInputDate
     },
     setup() {
-        const val = ref(null);
+        const val = ref('2023-05-03T01:00:00.000');
+        // const val = ref(null);
 
         function onUpdate(date) {
             console.log('update', date);
@@ -39,10 +40,10 @@ const Template = (args, { argTypes }) => ({
     },
     template: `
         <div>
-            <fig-form-date-time
+            <fig-form-input-date
                 v-bind="args"
                 v-model="val"
-                @update="onUpdate"
+                @update:modelValue="onUpdate"
                 @close="onClose"
                 @open="onOpen" />
 
@@ -50,7 +51,7 @@ const Template = (args, { argTypes }) => ({
                 UTC: {{ val }}
             </div>
         </div>
-        `
+    `
 });
 
 export const DateTime = Template.bind({});

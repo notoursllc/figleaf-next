@@ -9,13 +9,9 @@ import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.css';
-import { zonedTimeToUtc } from 'date-fns-tz';
+import { zonedTimeToUtc, utcToZonedTime } from 'date-fns-tz';
 import FormText from '../text/FormText.vue';
-import {
-    dateTo8601,
-    format8601,
-    updateSecondsOfIso8601
-} from '../../../utils/DateUtils.js';
+import useDate from '../../../composables/useDate.js';
 
 const props = defineProps({
     modelValue: {
@@ -63,16 +59,27 @@ const emit = defineEmits([
 ]);
 
 const { t } = useI18n();
+const {
+    dateTo8601,
+    format8601,
+    updateSecondsOfIso8601,
+    dateObjectToZonedDateObject,
+    isDateObject
+} = useDate();
 
-const selectedValue = ref(props.modelValue);
+const selectedDate = ref(null);
 const formInputDateTime = ref(null);
 let Pickr = null;
 
+function zonedTimeToUtcWithoutZ(date) {
+    console.log("zonedTimeToUtcWithoutZ", date, isDateObject(date));
 
-function zonedTimeToUtcWithoutZ(dateObj) {
-    if (dateObj) {
-        const isoString = zonedTimeToUtc(dateObj, props.timezone).toISOString().replace('Z', '');
-        return updateSecondsOfIso8601(isoString, props.inclusiveSeconds ? 59 : 0);
+    if (date) {
+        if (isDateObject(date)) {
+            date = zonedTimeToUtc(date, props.timezone).toISOString().replace('Z', '');
+        }
+
+        return updateSecondsOfIso8601(date, props.inclusiveSeconds ? 59 : 0);
     }
 }
 
@@ -93,6 +100,18 @@ function onClear() {
     emitInput(null);
 }
 
+function dateToUtc(date) {
+    const zonedDate = dateObjectToZonedDateObject(date, props.timezone);
+    return Date.UTC(
+        zonedDate.getFullYear(),
+        zonedDate.getMonth(),
+        zonedDate.getDate(),
+        zonedDate.getHours(),
+        zonedDate.getMinutes(),
+        zonedDate.getSeconds()
+    ).toISOString().replace('Z', '');
+}
+
 /*
 * Config options: https://flatpickr.js.org/options/
 * Events:  https://flatpickr.js.org/events/
@@ -102,6 +121,8 @@ function getConfig() {
     const dateFormat = props.config?.enableTime === false
         ? t('date.format.mdy')
         : t('date.format.mdy_hm');
+
+        console.log("getConfig", props.modelValue)
 
     const config = Object.assign(
         {},
@@ -113,11 +134,25 @@ function getConfig() {
             enableTime: true,
             hourIncrement: 1,
             minuteIncrement: 1,
-
-            // props.modelValue should always be a UTC ISO 8601 string
-            defaultDate: props.modelValue ? utcToZonedTime(props.modelValue, props.timezone) : null,
-
+            // defaultDate: props.modelValue ? utcToZonedTime(props.modelValue, props.timezone) : null,
+            // defaultDate: props.modelValue ? zonedTimeToUtc(props.modelValue, props.timezone) : null,
+            defaultDate: props.modelValue ? () => {
+                if(props.modelValue) {
+                    const browserDate = new Date(props.modelValue);
+                    const utc = Date.UTC(
+                        browserDate.getFullYear(),
+                        browserDate.getMonth(),
+                        browserDate.getDate(),
+                        browserDate.getHours(),
+                        browserDate.getMinutes(),
+                        browserDate.getSeconds(),
+                    );
+                    return utc;
+                }
+            } : null,
+            // defaultDate: props.modelValue || null,
             formatDate: (date, format) => {
+                // return date.toISOString();
                 return format8601(
                     dateTo8601(date),
                     dateFormat,
@@ -195,6 +230,8 @@ function getConfig() {
             wrap: false // needs to be false
         }
     );
+
+    return config;
 }
 
 watch(
@@ -220,6 +257,7 @@ watch(
 watch(
     () => props.modelValue,
     (newVal) => {
+        console.log("WATCH mv", newVal);
         // selectedDate.value = newVal ? dateToUtc(newVal) : null;
         selectedDate.value = newVal;
 
