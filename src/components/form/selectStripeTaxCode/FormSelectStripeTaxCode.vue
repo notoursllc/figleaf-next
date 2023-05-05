@@ -1,162 +1,117 @@
 <script>
-import FigFormSelect from '../select/FormSelect.vue';
+export default {
+    name: 'FigFormSelectStripeTaxCode'
+}
+</script>
+
+<script setup>
+import { computed, watch, ref } from 'vue';
+import FigFormMultiSelect from '../multiselect/FormMultiSelect.vue';
 import FigButton from '../../button/Button.vue';
 
-export default {
-    name: 'FigFormSelectStripeTaxCode',
+const props = defineProps({
+    ...FigFormMultiSelect.props,
 
-    components: {
-        FigFormSelect,
-        FigButton
-    },
-
-    props: {
-        value: {
-            type: String,
-            default: null
-        },
-
-        placeholder: {
-            type: String,
-            default: null
-        },
-
-        size: {
-            type: String,
-            default: 'md'
-        },
-
-        clearable: {
-            type: Boolean,
-            default: true
-        },
-
-        taxCodes: {
-            type: Array,
-            default() {
-                return [];
-            }
-        },
-
-        whiteList: {
-            type: Array,
-            default() {
-                return []
-            }
-        },
-
-        allowOptionToggle: {
-            type: Boolean,
-            default: true
+    taxCodes: {
+        type: Array,
+        default() {
+            return [];
         }
     },
 
-    data: function() {
-        return {
-            selected: null,
-            allOptions: [],
-            whitelistOptions: [],
-            currentOptsIsWhiteList: false
-        };
-    },
-
-    watch: {
-        value: {
-            handler(newVal) {
-                this.taxCodes.forEach((obj) => {
-                    if(newVal === obj.value) {
-                        this.selected = obj;
-                    }
-                });
-
-                this.currentOptsIsWhiteList = this.whiteList.includes(this.selected?.value);
-            },
-            immediate: true
-        },
-
-        taxCodes: {
-            handler(newVal) {
-                this.createOptions()
-            },
-            immediate: true
-        },
-
-        // whiteList: {
-        //     handler(newVal) {
-        //         this.currentOptsIsWhiteList = !!newVal.length;
-        //     },
-        //     immediate: true
-        // }
-    },
-
-    computed: {
-        canToggleWhitelist() {
-            return this.allowOptionToggle && !!this.whiteList.length;
-        },
-
-        selectOpts() {
-            return this.currentOptsIsWhiteList ? this.whitelistOptions : this.allOptions;
-        },
-
-        selectedValueDesc() {
-            return this.selected ? this.selected.description : null;
+    whiteList: {
+        type: Array,
+        default() {
+            return []
         }
     },
 
-    methods: {
-        emitInput(val) {
-            // when the select clear button is clicked then the val changes to "0",
-            // but we want null instead:
-            this.$emit('input', !val ? null : val.value);
-        },
-
-        toggleWhiteListOpts() {
-            this.currentOptsIsWhiteList = !this.currentOptsIsWhiteList;
-        },
-
-        createOptions() {
-            const allOpts = [];
-            const whiteListOpts = [];
-
-            this.taxCodes.forEach((obj) => {
-                const opt = {
-                    label: obj.name,
-                    value: obj.id,
-                    description: obj.description
-                };
-
-                allOpts.push(opt);
-
-                if(this.value === opt.value) {
-                    this.selected = opt;
-                }
-
-                if(this.whiteList.includes(obj.id)) {
-                    whiteListOpts.push(opt);
-                }
-            });
-
-            this.allOptions = allOpts;
-            this.whitelistOptions = whiteListOpts;
-        }
+    allowOptionToggle: {
+        type: Boolean,
+        default: true
     }
-};
+});
+
+const emit = defineEmits([
+    'update:modelValue'
+]);
+
+const selected = ref(null);
+const allOptions = ref([]);
+const whitelistOptions = ref([]);
+const currentOptsIsWhiteList = ref(false);
+
+const canToggleWhitelist = computed(() => {
+    return props.allowOptionToggle && !!props.whiteList.length;
+});
+
+const selectOpts = computed(() => {
+    return currentOptsIsWhiteList.value ? whitelistOptions.value : allOptions.value;
+});
+
+function emitInput() {
+    emit('update:modelValue', selected.value?.id);
+}
+
+function toggleWhiteListOpts() {
+    currentOptsIsWhiteList.value = !currentOptsIsWhiteList.value;
+}
+
+function createOptions() {
+    const whiteListOpts = [];
+
+    props.taxCodes.forEach((obj) => {
+        if(props.modelValue === obj.id) {
+            selected.value = obj;
+        }
+
+        if(props.whiteList.includes(obj.id)) {
+            whiteListOpts.push(obj);
+        }
+    });
+
+    allOptions.value = [ ...props.taxCodes ];
+    whitelistOptions.value = whiteListOpts;
+}
+
+
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        props.taxCodes?.forEach((obj) => {
+            if(newVal === obj.id) {
+                selected.value = obj;
+            }
+        });
+
+        currentOptsIsWhiteList.value = props.whiteList.includes(selected.value?.id);
+    },
+    { immediate: true }
+);
+
+watch(
+    () => props.taxCodes,
+    () => {
+        createOptions();
+    },
+    { immediate: true }
+);
 </script>
 
 
 <template>
     <div>
-        <fig-form-select
+        <fig-form-multi-select
             v-model="selected"
-            :clearable="clearable"
-            :options="selectOpts"
-            :placeholder="placeholder"
-            @input="emitInput"
-            :size="size"
+            @update:modelValue="emitInput"
+            value-prop="id"
+            label="name"
             v-bind="$attrs"
-            class="w-full" />
+            object
+            mode="single"
+            :options="selectOpts" />
         <div class="px-3 text-gray-500">
-            <div v-if="selectedValueDesc" class="text-sm">{{ selectedValueDesc }}</div>
+            <div v-if="selected?.description" class="text-sm">{{ selected.description }}</div>
             <fig-button
                 v-if="canToggleWhitelist"
                 variant="link"

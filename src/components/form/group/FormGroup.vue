@@ -5,7 +5,7 @@ export default {
 </script>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, useSlots } from 'vue';
 
 const props = defineProps({
     stacked: {
@@ -18,6 +18,8 @@ const props = defineProps({
         default: false
     }
 });
+
+const slots = useSlots();
 
 const containerClasses = computed(() => {
     return [

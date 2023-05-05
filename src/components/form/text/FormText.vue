@@ -1,101 +1,88 @@
 <script>
-import form_input_mixin from '../form_input_mixin';
-
 export default {
-    name: 'FormText',
+    name: 'FormText'
+}
+</script>
 
-    mixins: [
-        form_input_mixin
-    ],
+<script setup>
+import { useSlots, watch, ref, computed } from 'vue';
+import useFormInput, { formInputProps } from '../useFormInput.js';
 
-    props: {
-        value: {},
+const props = defineProps({
+    ...formInputProps,
 
-        type: {
-            type: String,
-            default: 'text'
-        },
+    modelValue: {},
 
-        placeholder: {
-            type: String
-        },
-
-        autocomplete: {
-            type: Boolean
-        },
-
-        requird: {
-            type: Boolean,
-            default: false
-        },
-
-        inputClasses: {
-            type: String
-        },
-
-        squareLeft: {
-            type: Boolean,
-            default: false
-        },
-
-        squareRight: {
-            type: Boolean,
-            default: false
-        }
+    type: {
+        type: String,
+        default: 'text'
     },
 
-    data: () => ({
-        selectedValue: null
-    }),
-
-    computed: {
-        classNames() {
-            const classes = [
-                'form-input w-full fig-form-control rounded-sm',
-                this.sizeCssClass,
-                this.disabledCssClass
-            ];
-
-            if(this.stateCssClass) {
-                classes.push(this.stateCssClass);
-            }
-
-            if(this.type === 'color') {
-                classes.push('p-1');
-            }
-
-            classes.push(
-                this.squareLeft ? 'rounded-l-none' : 'rounded-l-sm',
-                this.squareRight ? 'rounded-r-none' : 'rounded-r-sm'
-            );
-
-            return classes;
-        },
-
-        canShowLabel() {
-            return this.$slots.label && !this.selectedValue;
-        },
-
-        computedPlaceholder() {
-            return this.canShowLabel ? null : this.placeholder;
-        }
+    placeholder: {
+        type: String
     },
 
-    watch: {
-        value: {
-            handler: function(newVal) {
-                this.selectedValue = newVal;
-            },
-            immediate: true
-        }
+    requird: {
+        type: Boolean,
+        default: false
     },
 
-    methods: {
-        emitInput() {
-            this.$emit('input', this.selectedValue);
-        }
+    inputClasses: {
+        type: String
+    },
+
+    squareLeft: {
+        type: Boolean,
+        default: false
+    },
+
+    squareRight: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const slots = useSlots();
+const emit = defineEmits([
+    'update:modelValue'
+]);
+
+const selectedValue = ref(null);
+const { classNames } = useFormInput(props);
+
+const classes = computed(() => {
+    return {
+        'rounded-sm': true,
+        ...classNames.value,
+        'rounded-l-none': props.squareLeft,
+        'rounded-l-sm': !props.squareLeft,
+        'rounded-r-none': props.squareRight,
+        'rounded-r-sm': !props.squareRight,
+        [props.inputClasses]: props.inputClasses
+    };
+});
+
+const canShowLabel = computed(() => {
+    return slots.label && !selectedValue.value;
+});
+
+const computedPlaceholder = computed(() => {
+    return canShowLabel.value ? null : props.placeholder;
+});
+
+function emitInput() {
+    emit('update:modelValue', selectedValue.value);
+}
+
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        selectedValue.value = newVal;
+    },
+    {
+        immediate: true
+    }
+);
 </script>
 
 
@@ -105,15 +92,13 @@ export default {
             :type="type"
             v-model="selectedValue"
             @input="emitInput"
-            :class="classNames"
-            :disabled="disabled"
-            :readonly="readonly"
-            :autocomplete="autocomplete"
+            :class="classes"
             :placeholder="computedPlaceholder"
             v-bind="$attrs">
         <div v-if="canShowLabel" class="form-input-label"><slot name="label"></slot></div>
     </div>
 </template>
+
 
 <style scoped>
 .form-input-label {

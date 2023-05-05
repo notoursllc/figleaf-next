@@ -1,72 +1,81 @@
 <script>
-import isObject from 'lodash.isobject';
-import FigFormSelect from '../select/FormSelect.vue';
-import { formSelectProps } from '../select/constants';
-
 export default {
-    components: {
-        FigFormSelect
-    },
+    name: 'FormSelectBitwise'
+}
+</script>
 
-    props: {
-        ...formSelectProps,
+<script setup>
+import { computed, watch, ref } from 'vue';
+import isObject from 'lodash.isobject';
+import FigFormMultiselect from '../multiselect/FormMultiSelect.vue';
 
-        // overwriting the 'value' prop coming from formSelectProps
-        // in order to remove the 'type' property constraints
-        value: {}
-    },
+console.log("PROPS", FigFormMultiselect.props);
 
-    data: function() {
-        return {
-            selectedVal: []
-        };
-    },
+const props = defineProps({
+    ...FigFormMultiselect.props,
 
-    watch: {
-        value: {
-            handler(newVal) {
-                this.setSelectedValue();
-            },
-            immediate: true
-        },
+    // modelValue: {},
 
-        options: {
-            handler(newVal) {
-                this.setSelectedValue();
-            },
-            immediate: true
-        }
-    },
+    // options: {
+    //     type: Array
+    // }
+});
 
-    methods: {
-        selectValueChanged(valueArray) {
-            let total = 0;
+const emit = defineEmits([
+    'update:modelValue'
+]);
 
-            if(!Array.isArray(valueArray)) {
-                valueArray = [valueArray];
-            }
+const selectedValue = ref(null);
 
-            valueArray.forEach(function(obj) {
-                if(isObject(obj)) {
-                    total += obj.value;
-                }
-            });
+function setSelectedValue() {
+    selectedValue.value = props.options.filter((obj) => obj.value & props.modelValue);
 
-            this.$emit('input', total);
-        },
+    selectedValue.value = !props.multiple
+        ? props.options.find((obj) => obj.value === props.modelValue)
+        : props.options.filter((obj) => obj.value & props.modelValue);
+}
 
-        setSelectedValue() {
-            this.selectedVal = !this.multiple
-                ? this.options.find((obj) => obj.value === this.value)
-                : this.options.filter((obj) => obj.value & this.value);
-        }
+
+function selectValueChanged(valueArray) {
+    console.log("selectValueChanged", valueArray)
+    let total = 0;
+
+    if(!Array.isArray(valueArray)) {
+        valueArray = [valueArray];
     }
-};
+
+    valueArray.forEach(function(val) {
+        total += val;
+    });
+
+    emit('update:modelValue', total);
+}
+
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        setSelectedValue();
+    },
+    { immediate: true }
+);
+
+watch(
+    () => props.options,
+    (newVal) => {
+        setSelectedValue();
+    },
+    { immediate: true }
+);
 </script>
 
 <template>
-    <fig-form-select
+    <div>
+    <fig-form-multiselect
         v-model="selectedVal"
-        v-bind="$props"
-        @input="selectValueChanged" />
+        v-bind="$attrs"
+        :options="options"
+        :mode='$attrs.mode || "tags"'
+        @update:modelValue="selectValueChanged"
+        class="fig-form-select-bitwise" />
+    </div>
 </template>

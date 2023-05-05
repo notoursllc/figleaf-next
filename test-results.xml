@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="9" failures="0" errors="0" time="1.483">
+    <testsuite name="src/composables/useDate.test.js" timestamp="2023-05-05T19:33:35.515Z" hostname="bruinss-iMac.local" tests="9" failures="0" errors="0" skipped="0" time="0.059">
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; zonedTimeToUtc" time="0.029">
+            <system-out>
+zonedTimeToUtc [35m2021-01-01T16:00:00.000Z[39m
+zonedTimeToUtc dateTo8601 2021-01-01T08:00:00
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; addLeadingZero() &gt; should add a leading zero to a number less than 10" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; addLeadingZero() &gt; should not add a leading zero to a number greater than 9" time="0">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateTo8601() &gt; should return the same date in ISO-8601 format" time="0">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateTo8601() &gt; should return the UTC date in ISO-8601 format when given a date with a timezone offset" time="0">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateObjectToZonedDateObject() &gt; should return a date object in the given timezone" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateObjectToUtcDateObject() &gt; should return a date object in UTC" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; format8601() &gt; should return the formatted ISO-8601 date" time="0.022">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; updateSecondsOfIso8601() &gt; should update the seconds of an ISO-8601 string" time="0.001">
+        </testcase>
+    </testsuite>
+</testsuites>
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="9" failures="0" errors="0" time="66.421">
+    <testsuite name="src/composables/useDate.test.js" timestamp="2023-05-05T19:34:40.448Z" hostname="bruinss-iMac.local" tests="9" failures="0" errors="0" skipped="0" time="0.039">
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; zonedTimeToUtc" time="0.008">
+            <system-out>
+zonedTimeToUtc [35m2021-01-01T16:00:00.000Z[39m
+zonedTimeToUtc toISOString 2021-01-01T16:00:00.000Z
+zonedTimeToUtc dateTo8601 2021-01-01T08:00:00
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; addLeadingZero() &gt; should add a leading zero to a number less than 10" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; addLeadingZero() &gt; should not add a leading zero to a number greater than 9" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateTo8601() &gt; should return the same date in ISO-8601 format" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateTo8601() &gt; should return the UTC date in ISO-8601 format when given a date with a timezone offset" time="0">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateObjectToZonedDateObject() &gt; should return a date object in the given timezone" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateObjectToUtcDateObject() &gt; should return a date object in UTC" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; format8601() &gt; should return the formatted ISO-8601 date" time="0.023">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; updateSecondsOfIso8601() &gt; should update the seconds of an ISO-8601 string" time="0">
+        </testcase>
+    </testsuite>
+</testsuites>
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="9" failures="0" errors="0" time="181.205">
+    <testsuite name="src/composables/useDate.test.js" timestamp="2023-05-05T19:36:35.231Z" hostname="bruinss-iMac.local" tests="9" failures="0" errors="0" skipped="0" time="0.032">
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; zonedTimeToUtc" time="0.008">
+            <system-out>
+zonedTimeToUtc [35m2021-01-01T16:00:00.000Z[39m
+zonedTimeToUtc toISOString 2021-01-01T16:00:00.000Z
+zonedTimeToUtc dateTo8601 2021-01-01T08:00:00
+dateObjectToUtcDateObject 2021-01-02T00:00:00.000Z
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; addLeadingZero() &gt; should add a leading zero to a number less than 10" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; addLeadingZero() &gt; should not add a leading zero to a number greater than 9" time="0">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateTo8601() &gt; should return the same date in ISO-8601 format" time="0">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateTo8601() &gt; should return the UTC date in ISO-8601 format when given a date with a timezone offset" time="0">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateObjectToZonedDateObject() &gt; should return a date object in the given timezone" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateObjectToUtcDateObject() &gt; should return a date object in UTC" time="0">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; format8601() &gt; should return the formatted ISO-8601 date" time="0.017">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; updateSecondsOfIso8601() &gt; should update the seconds of an ISO-8601 string" time="0.001">
+        </testcase>
+    </testsuite>
+</testsuites>
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="9" failures="0" errors="0" time="312.283">
+    <testsuite name="src/composables/useDate.test.js" timestamp="2023-05-05T19:38:46.310Z" hostname="bruinss-iMac.local" tests="9" failures="0" errors="0" skipped="0" time="0.035">
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; zonedTimeToUtc" time="0.006">
+            <system-out>
+zonedTimeToUtc [35m2021-01-01T16:00:00.000Z[39m
+zonedTimeToUtc toISOString 2021-01-01T16:00:00.000
+zonedTimeToUtc dateTo8601 2021-01-01T08:00:00
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; addLeadingZero() &gt; should add a leading zero to a number less than 10" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; addLeadingZero() &gt; should not add a leading zero to a number greater than 9" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateTo8601() &gt; should return the same date in ISO-8601 format" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateTo8601() &gt; should return the UTC date in ISO-8601 format when given a date with a timezone offset" time="0">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateObjectToZonedDateObject() &gt; should return a date object in the given timezone" time="0.001">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; dateObjectToUtcDateObject() &gt; should return a date object in UTC" time="0">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; format8601() &gt; should return the formatted ISO-8601 date" time="0.021">
+        </testcase>
+        <testcase classname="src/composables/useDate.test.js" name="DateUtils &gt; updateSecondsOfIso8601() &gt; should update the seconds of an ISO-8601 string" time="0.001">
+        </testcase>
+    </testsuite>
+</testsuites>

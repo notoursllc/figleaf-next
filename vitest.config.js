@@ -4,12 +4,21 @@ import { configDefaults, defineConfig } from 'vitest/config'
 import viteConfig from './vite.config'
 
 export default mergeConfig(
-  viteConfig,
-  defineConfig({
-    test: {
-      environment: 'jsdom',
-      exclude: [...configDefaults.exclude, 'e2e/*'],
-      root: fileURLToPath(new URL('./', import.meta.url))
-    }
-  })
+    viteConfig,
+    defineConfig({
+        test: {
+            globale: true,
+            environment: 'jsdom',
+            include: [
+                './src/**/*.test.js'
+            ],
+            exclude: [...configDefaults.exclude, 'e2e/*'],
+            reporters: [
+                'default',
+                'junit'
+            ],
+            outputFile: './test-results.xml',
+            root: fileURLToPath(new URL('./', import.meta.url))
+        }
+    })
 )

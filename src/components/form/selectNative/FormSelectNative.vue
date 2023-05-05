@@ -1,61 +1,57 @@
 <script>
-import form_input_mixin from '../form_input_mixin';
-
 export default {
-    name: 'FormSelectNative',
+    name: 'FormSelectNative'
+}
+</script>
 
-    mixins: [
-        form_input_mixin
-    ],
+<script setup>
+import { computed, watch, ref } from 'vue';
+import useFormInput, { formInputProps } from '../useFormInput.js';
 
-    props: {
-        value: {},
+const props = defineProps({
+    modelValue: {},
 
-        options: {
-            type: Array
-        }
-    },
-
-    data: () => ({
-        selectedValue: null
-    }),
-
-    computed: {
-        classNames() {
-            const classes = [
-                'fig-form-select-native form-select',
-                ...this.formInputMix_classNames
-            ];
-
-            return classes;
-        }
-    },
-
-    watch: {
-        value: {
-            handler: function(newVal) {
-                this.selectedValue = newVal;
-            },
-            immediate: true
-        }
-    },
-
-    methods: {
-        onChange() {
-            this.$emit('input', this.selectedValue);
-        }
+    options: {
+        type: Array
     }
+});
+
+const emit = defineEmits([
+    'update:modelValue'
+]);
+
+const selectedValue = ref(null);
+
+const classes = computed(() => {
+    const { classNames } = useFormInput(props);
+
+    return {
+        'fig-form-select-native': true,
+        'form-select': true,
+        ...classNames.value
+    }
+});
+
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        selectedValue.value = newVal;
+    },
+    { immediate: true }
+);
+
+const onChange = () => {
+    emit('update:modelValue', selectedValue.value);
 };
 </script>
 
 
 <template>
     <select
-        :class="classNames"
         v-model="selectedValue"
         @change="onChange"
-        :disabled="disabled"
-        :aria-disabled="disabled">
+        :class="classes"
+        :aria-disabled="$attrs.disabled">
         <slot name="options">
             <option
                 v-for="(option, idx) in options"

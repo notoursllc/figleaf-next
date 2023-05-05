@@ -1,105 +1,84 @@
 <script>
-import FormText from '../text/FormText';
-import form_input_mixin from '../form_input_mixin';
-
 export default {
-    name: 'FormInputNumber',
+    name: 'FormInputNumber'
+}
+</script>
 
-    components: {
-        FormText
+<script setup>
+import { watch, ref } from 'vue';
+import FormText from '../text/FormText.vue';
+
+const props = defineProps({
+    ...FormText.props,
+
+    modelValue: {
+        type: Number
     },
 
-    mixins: [
-        form_input_mixin
-    ],
-
-    props: {
-        value: {
-            // type: Number
-        },
-
-        max: {
-            type: Number,
-            default: null
-        },
-
-        min: {
-            type: Number,
-            default: null
-        },
-
-        step: {
-            type: Number,
-            default: 1
-        },
-
-        center: {
-            type: Boolean,
-            default: false
-        }
+    max: {
+        type: Number,
+        default: null
     },
 
-    data: () => ({
-        selectedValue: null
-    }),
-
-    computed: {
-        classNames() {
-            const classes = [
-                // `fig-input-number-${this.size}`
-                this.sizeCssClass,
-                this.disabledCssClass
-            ];
-
-            if(this.center) {
-                classes.push('text-center')
-            }
-
-            if(this.stateCssClass) {
-                classes.push(this.stateCssClass);
-            }
-
-            return classes;
-        }
+    min: {
+        type: Number,
+        default: null
     },
 
-    watch: {
-        value: {
-            handler: function(newVal) {
-                if(newVal != null) {
-                    this.setValue(newVal, false);
-                }
-            },
-            immediate: true
-        }
+    step: {
+        type: Number,
+        default: 1
     },
 
-    methods: {
-        emitInput() {
-            if(this.selectedValue !== this.value) {
-                this.$emit('input', parseFloat(this.selectedValue));
-            }
-        },
-
-        setValue(newVal, emit) {
-            const val = isNaN(newVal) ? this.min : newVal;
-
-            if(this.max && (val > this.max)) {
-                this.selectedValue = this.max;
-            }
-            else if(this.min && (val < this.min)) {
-                this.selectedValue = this.min;
-            }
-            else {
-                this.selectedValue = val;
-            }
-
-            if(emit !== false) {
-                this.emitInput();
-            }
-        }
+    center: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const emit = defineEmits([
+    'update:modelValue'
+]);
+
+const selectedValue = ref(null);
+
+function emitInput() {
+    if(selectedValue.value !== props.modelValue) {
+        emit('update:modelValue', selectedValue.value);
+    }
+}
+
+function setValue(newVal) {
+    if(isNaN(parseInt(newVal, 10))) {
+        selectedValue.value = props.min !== null ? props.min : null;
+        return;
+    }
+
+    const val = isNaN(parseInt(newVal, 10)) ? props.min : newVal;
+
+    if(props.max !== null && (val > props.max)) {
+        selectedValue.value = props.max;
+    }
+    else if(props.min !== null && (val < props.min)) {
+        selectedValue.value = props.min;
+    }
+    else {
+        selectedValue.value = val;
+    }
+}
+
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        if(newVal != null) {
+            setValue(newVal);
+            emitInput();
+        }
+    },
+    {
+        immediate: true
+    }
+)
 </script>
 
 
@@ -114,7 +93,7 @@ export default {
         :disabled="disabled"
         :readonly="readonly"
         v-bind="$attrs"
-        @input="emitInput" />
+        @update:modelValue="emitInput" />
 </template>
 
 

@@ -28,7 +28,7 @@ export const formInputProps = {
     }
 };
 
-export const useFormInput = () => {
+export default function useFormInput(props) {
     const classNames = computed(() => {
         return {
             'fig-form-control': true,

@@ -1,38 +1,34 @@
 <script>
-import form_input_mixin from '../form_input_mixin';
-
 export default {
-    name: 'FormTextarea',
+    name: 'FormTextarea'
+}
+</script>
 
-    mixins: [
-        form_input_mixin
-    ],
+<script setup>
 
-    props: {
-        value: {
-            type: String
-        }
-    },
+import { computed, ref, watch } from 'vue';
 
-    data: () => ({
-        selectedValue: null
-    }),
-
-    watch: {
-        value: {
-            handler: function(newVal) {
-                this.selectedValue = newVal;
-            },
-            immediate: true
-        }
-    },
-
-    methods: {
-        emitInput() {
-            this.$emit('input', this.selectedValue);
-        }
+const props = defineProps({
+    modelValue: {
+        type: String
     }
-};
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const selectedValue = ref(props.value);
+
+function emitInput() {
+    emit('update:modelValue', selectedValue.value);
+}
+
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        selectedValue.value = newVal;
+    },
+    { immediate: true }
+);
 </script>
 
 
@@ -40,6 +36,5 @@ export default {
     <textarea
         v-model="selectedValue"
         @input="emitInput"
-        v-bind="$props"
         class="form-textarea fig-form-control block w-full"></textarea>
 </template>

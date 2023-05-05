@@ -5,75 +5,112 @@ export default {
 </script>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed, useAttrs } from 'vue';
+import ObjectUtils from '../../../utils/ObjectUtils.js';
+import isEqual from 'lodash.isequal';
 
 const props = defineProps({
-    value: {},
+    value: null,
 
-    checkedValue: {},
+    modelValue: null,
 
-    uncheckedValue: {},
+    trueValue: {
+        type: null,
+        default: true
+    },
 
-    disabled: {
-        type: Boolean,
+    falseValue: {
+        type: null,
         default: false
     },
 
-    readonly: {
-        type: Boolean
+    binary: {
+        type: Boolean,
+        default: false
     }
 });
 
-const emit = defineEmits(['input']);
+const emit = defineEmits([
+    'click',
+    'change',
+    'input',
+    'update:modelValue'
+]);
 
-const isChecked = ref(null);
-const checkedValueSet = computed(() => props.checkedValue !== undefined);
-const uncheckedValueSet = computed(() => props.uncheckedValue !== undefined);
+const attrs = useAttrs();
 
-function onChange(e) {
-    isChecked.value = e.target.checked;
+const focused = ref(false);
+const input = ref(null);
 
-    if(isChecked.value && checkedValueSet.value) {
-        emitInput(props.checkedValue);
+const checked = computed(() => {
+    if(props.binary) {
+        return props.modelValue === props.trueValue;
     }
-    else if(!isChecked.value && uncheckedValueSet.value) {
-        emitInput(props.uncheckedValue);
+
+    return ObjectUtils.contains(props.value, props.modelValue);
+});
+
+const classes = computed(() => {
+    return {
+        'form-checkbox': true,
+        'fig-form-control': true,
+        'form-checkbox--disabled': attrs.disabled,
+        'form-checkbox--readonly': attrs.readonly,
+        'form-checkbox--focused': focused.value
+    };
+});
+
+function onClick(e) {
+    if (attrs.disabled || attrs.readonly) {
+        return;
+    }
+
+    let newModelValue;
+
+    if (props.binary) {
+        newModelValue = checked.value ? props.falseValue : props.trueValue;
     }
     else {
-        emitInput(isChecked.value);
-    }
-}
-
-function emitInput(val) {
-    emit('input', val);
-}
-
-watch(
-    () => props.value,
-    (newVal) => {
-        if(checkedValueSet.value && newVal === props.checkedValue) {
-            isChecked.value = true;
-        }
-        else if(uncheckedValueSet.value && newVal === props.uncheckedValue) {
-            isChecked.value = false;
+        if (checked.value) {
+            // the new model value is an array without the value
+            newModelValue = props.modelValue.filter((val) => !isEqual(val, props.value));
         }
         else {
-            isChecked.value = newVal;
+            newModelValue = props.modelValue ? [...props.modelValue, props.value] : [props.value];
         }
-    },
-    { immediate: true }
-);
+    }
+
+    emit('click', e);
+    emit('change', e);
+    emit('update:modelValue', newModelValue);
+    emit('input', newModelValue);
+    input.value.focus();
+}
 </script>
 
 
 <template>
-    <label class="inline-flex items-center">
+    <div
+        class="inline-flex items-center"
+        @click="onClick($event)">
         <input
+            ref="input"
             type="checkbox"
-            class="form-checkbox fig-form-control"
+            :checked="checked"
+            :value="value"
             v-bind="$attrs"
-            @change="onChange"
-            v-model="isChecked">
-        <span class="ml-2" v-if="$slots.default"><slot></slot></span>
-    </label>
+            :class="classes">
+        <span
+            v-if="$slots.default"
+            @click="onClick($event)"
+            class="ml-2"><slot /></span>
+    </div>
 </template>
+
+
+<style scoped>
+.form-checkbox--disabled,
+.form-checkbox--readonly {
+    @apply bg-gray-200 cursor-not-allowed;
+}
+</style>

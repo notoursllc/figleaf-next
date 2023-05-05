@@ -75,6 +75,10 @@
     line-height: 1.4;
 }
 
+.fig-form-focus-ring {
+    @apply focus:outline-none focus:ring ring-blue-300;
+}
+
 [v-cloak] {
     display: none;
 }
