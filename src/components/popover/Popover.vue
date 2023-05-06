@@ -17,6 +17,12 @@ const emit = defineEmits([
     'visible'
 ]);
 
+defineExpose({
+    show,
+    hide,
+    toggle
+});
+
 const slots = useSlots();
 
 let popper = null;
