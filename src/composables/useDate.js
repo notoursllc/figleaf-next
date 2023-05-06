@@ -1,4 +1,4 @@
-import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
+import { utcToZonedTime, zonedTimeToUtc, getTimezoneOffset } from "date-fns-tz";
 import { useI18n } from "vue-i18n";
 
 export default function useDate() {
@@ -63,8 +63,6 @@ export default function useDate() {
             return null;
         }
 
-        console.log('dateObjectToZonedDateObject', d)
-
         const browserDate = d || new Date();
 
         // Date.UTC() returns the number of milliseconds in a Date object since January 1, 1970, 00:00:00, universal time.
@@ -79,6 +77,41 @@ export default function useDate() {
         );
 
         return utcToZonedTime(utc, timezone);
+    }
+
+
+    function createDateInTimezone(isoTimestamp, timezone) {
+        const date = new Date(isoTimestamp);
+
+        // get the UTC timestamp corresponding to the input timestamp
+        const utcTimestamp = Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            date.getUTCHours(),
+            date.getUTCMinutes(),
+            date.getUTCSeconds(),
+            date.getUTCMilliseconds()
+        );
+
+        // create a Date object with the adjusted timezone offset
+        return new Date(utcTimestamp + getTimezoneOffset(timezone));
+    }
+
+
+    function convertIsoDateToTimezone(isoTimestamp, timezone) {
+        const newDate = createDateInTimezone(isoTimestamp, timezone);
+        return dateTo8601(newDate);
+    }
+
+
+    function isDaylightSavingTime() {
+        const date = new Date();
+        const januaryOffset = new Date(date.getFullYear(), 0, 1).getTimezoneOffset(); // get the timezone offset for January 1st
+        const julyOffset = new Date(date.getFullYear(), 6, 1).getTimezoneOffset(); // get the timezone offset for July 1st
+        const isDst = januaryOffset !== julyOffset; // if the timezone offset is different in January and July, we're in DST
+
+        return isDst;
     }
 
 
@@ -125,6 +158,7 @@ export default function useDate() {
         const format = dateFormat || t('date.format.mdy_hm');
         const isoParts = iso8601.match(/\d+/g);
 
+
         // date part helpers
         const monthInt = parseInt(isoParts[1], 10);
         const hourMilitary = parseInt(isoParts[3], 10); // 0-23
@@ -162,8 +196,7 @@ export default function useDate() {
             .replace(/\bs\b/g, parseInt(isoParts[5], 10)) // s - no padding
 
             // am/pm
-            .replace(/\ba\b/g, hourMilitary > 11 ? t('date.meridiem.pm') : t('date.meridiem.pm')) // a - AM/PM
-
+            .replace(/\ba\b/g, hourMilitary > 11 ? t('date.meridiem.pm') : t('date.meridiem.am')) // a - AM/PM
     }
 
 
@@ -180,7 +213,9 @@ export default function useDate() {
         dateObjectToUtcDateObject,
         updateSecondsOfIso8601,
         format8601,
-        isDateObject
+        isDateObject,
+        convertIsoDateToTimezone,
+        isDaylightSavingTime
     }
 
 }

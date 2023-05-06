@@ -46,6 +46,32 @@ describe('DateUtils', () => {
     // });
 
 
+    describe('convertIsoDateToTimezone()', () => {
+        const {
+            convertIsoDateToTimezone,
+            isDaylightSavingTime
+        } = TestUtils.mockLoadComposableInApp( () => useDate() );
+
+        it('should convert an ISO-6601 date to another timezone', () => {
+            expect(
+                convertIsoDateToTimezone('2021-01-01T08:00:00', 'America/Los_Angeles') // −07:00 or −08:00
+            ).toBe(isDaylightSavingTime ? '2021-01-01T01:00:00' : '2021-01-01T00:00:00');
+
+            expect(
+                convertIsoDateToTimezone('2021-01-01T08:00:00', 'America/Denver') // −07:00 or −06:00
+            ).toBe(isDaylightSavingTime ? '2021-01-01T02:00:00' : '2021-01-01T01:00:00');
+
+            expect(
+                convertIsoDateToTimezone('2021-01-01T08:00:00', 'America/Indiana/Knox') // −06:00 or −05:00
+            ).toBe(isDaylightSavingTime ? '2021-01-01T03:00:00' : '2021-01-01T02:00:00');
+
+            expect(
+                convertIsoDateToTimezone('2021-01-01T08:00:00', 'America/New_York') // −05:00 or −04:00
+            ).toBe(isDaylightSavingTime ? '2021-01-01T04:00:00' : '2021-01-01T03:00:00');
+        });
+    });
+
+
     describe('addLeadingZero()', () => {
         const { addLeadingZero } = TestUtils.mockLoadComposableInApp( () => useDate() );
 

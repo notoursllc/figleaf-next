@@ -15,7 +15,7 @@ const Template = (args, { argTypes }) => ({
         FigFormInputDate
     },
     setup() {
-        const val = ref('2023-05-03T01:00:00.000');
+        const val = ref('2023-05-03T09:10:00');
         // const val = ref(null);
 
         function onUpdate(date) {

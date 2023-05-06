@@ -24,7 +24,8 @@ const props = defineProps({
         default: () => {
             return {
                 wrap: false,
-                defaultDate: null
+                defaultDate: null,
+                enableTime: true
             };
         }
     },
@@ -63,17 +64,16 @@ const {
     dateTo8601,
     format8601,
     updateSecondsOfIso8601,
-    dateObjectToZonedDateObject,
-    isDateObject
+    isDateObject,
+    convertIsoDateToTimezone
 } = useDate();
 
 const selectedDate = ref(null);
 const formInputDateTime = ref(null);
+
 let Pickr = null;
 
 function zonedTimeToUtcWithoutZ(date) {
-    console.log("zonedTimeToUtcWithoutZ", date, isDateObject(date));
-
     if (date) {
         if (isDateObject(date)) {
             date = zonedTimeToUtc(date, props.timezone).toISOString().replace('Z', '');
@@ -100,30 +100,12 @@ function onClear() {
     emitInput(null);
 }
 
-function dateToUtc(date) {
-    const zonedDate = dateObjectToZonedDateObject(date, props.timezone);
-    return Date.UTC(
-        zonedDate.getFullYear(),
-        zonedDate.getMonth(),
-        zonedDate.getDate(),
-        zonedDate.getHours(),
-        zonedDate.getMinutes(),
-        zonedDate.getSeconds()
-    ).toISOString().replace('Z', '');
-}
-
 /*
 * Config options: https://flatpickr.js.org/options/
 * Events:  https://flatpickr.js.org/events/
 * Formatting tokens:  https://flatpickr.js.org/formatting/
 */
 function getConfig() {
-    const dateFormat = props.config?.enableTime === false
-        ? t('date.format.mdy')
-        : t('date.format.mdy_hm');
-
-        console.log("getConfig", props.modelValue)
-
     const config = Object.assign(
         {},
         {
@@ -134,30 +116,19 @@ function getConfig() {
             enableTime: true,
             hourIncrement: 1,
             minuteIncrement: 1,
-            // defaultDate: props.modelValue ? utcToZonedTime(props.modelValue, props.timezone) : null,
-            // defaultDate: props.modelValue ? zonedTimeToUtc(props.modelValue, props.timezone) : null,
-            defaultDate: props.modelValue ? () => {
-                if(props.modelValue) {
-                    const browserDate = new Date(props.modelValue);
-                    const utc = Date.UTC(
-                        browserDate.getFullYear(),
-                        browserDate.getMonth(),
-                        browserDate.getDate(),
-                        browserDate.getHours(),
-                        browserDate.getMinutes(),
-                        browserDate.getSeconds(),
-                    );
-                    return utc;
-                }
-            } : null,
             // defaultDate: props.modelValue || null,
             formatDate: (date, format) => {
-                // return date.toISOString();
-                return format8601(
+                const dateFormat = props.config?.enableTime === false
+                    ? t('date.format.mdy')
+                    : t('date.format.mdy_hm');
+
+                const formatted = format8601(
                     dateTo8601(date),
                     dateFormat,
-                    null
-                )
+                    props.timezone
+                );
+
+                return formatted;
             },
 
             // https://flatpickr.js.org/localization
@@ -257,9 +228,7 @@ watch(
 watch(
     () => props.modelValue,
     (newVal) => {
-        console.log("WATCH mv", newVal);
-        // selectedDate.value = newVal ? dateToUtc(newVal) : null;
-        selectedDate.value = newVal;
+        selectedDate.value = newVal ? convertIsoDateToTimezone(newVal, props.timezone) : null;
 
         // newVal may be a timestamp with a seconds value.
         // Emitting here so the client can have the correct value
