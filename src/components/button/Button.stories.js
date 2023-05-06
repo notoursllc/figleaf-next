@@ -1,6 +1,4 @@
-import FigButton from './Button.vue';
-import FigIcon from '../icon/FigIcon.vue';
-
+import { FigButton, FigIcon } from '../../../index.js';
 import {
     buttonSizes,
     buttonVariants,
@@ -50,7 +48,7 @@ const Template = (args, { argTypes }) => ({
         };
     },
     template: `
-        <fig-button @click="onClick" v-bind="attrs">Button</fig-button>
+        <fig-button @click="onClick" v-bind="args">Button</fig-button>
     `
 });
 

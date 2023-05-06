@@ -1,6 +1,6 @@
 import { ref } from 'vue';
-import FigModal from './Modal.vue';
-import { modalSizes } from './constants';
+import { FigModal } from '../../../index.js';
+import { modalSizes } from './constants.js';
 
 export default {
     title: 'Components/Modal',
@@ -51,6 +51,6 @@ const Template = (args, { argTypes }) => ({
 
 export const Modal = Template.bind({});
 Modal.args = {
-    size: modalSizes.xl
+    size: modalSizes.md
 };
 

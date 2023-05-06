@@ -1,4 +1,4 @@
-import FigDivider from './Divider.vue';
+import { FigDivider } from '../../../index.js';
 
 export default {
     title: 'Components/Divider',

@@ -1,7 +1,9 @@
 import { ref } from 'vue';
-import FigDropdown from './Dropdown.vue';
-import FigDropdownButton from './DropdownButton.vue';
-import FigDropdownDivider from './DropdownDivider.vue';
+import {
+    FigDropdown,
+    FigDropdownButton,
+    FigDropdownDivider
+ } from '../../../index.js';
 
 export default {
     title: 'Components/Dropdown',

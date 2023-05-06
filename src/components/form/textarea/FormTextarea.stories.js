@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import FigFormTextarea from './FormTextarea.vue';
+import { FigFormTextarea } from '../../../../index.js';
 
 export default {
     title: 'Components/Form/Textarea',

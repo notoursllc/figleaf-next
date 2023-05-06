@@ -1,10 +1,9 @@
-import FigCurrencySymbol from './CurrencySymbol.vue';
+import { FigCurrencySymbol } from '../../../index.js';
 
 export default {
     title: 'Components/CurrencySymbol',
     component: FigCurrencySymbol,
     argTypes: {
-
     }
 };
 

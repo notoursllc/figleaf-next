@@ -1,12 +1,12 @@
 import { ref } from 'vue';
-import FigFormGroup from './FormGroup.vue';
-import FigFormText from '../text/FormText.vue';
+import {
+    FigFormGroup,
+    FigFormText
+} from '../../../../index.js';
 
 export default {
     title: 'Components/Form/Group',
-
     component: FigFormGroup,
-
     argTypes: {
     }
 };

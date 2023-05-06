@@ -1,4 +1,4 @@
-import FigBunnyVideoPlayer from './BunnyVideoPlayer.vue';
+import { FigBunnyVideoPlayer } from '../../../index.js';
 
 export default {
     title: 'Components/BunnyVideoPlayer',
@@ -24,7 +24,6 @@ const Template = (args, { argTypes }) => ({
 });
 
 export const BunnyVideoPlayer = Template.bind({});
-BunnyVideoPlayer.storyName = 'Bunny video player';
 BunnyVideoPlayer.args = {
     videoLibraryId: 65161,
     videoId: '4bbdbcf2-b6ff-4148-9bbc-99ed39487ef1',

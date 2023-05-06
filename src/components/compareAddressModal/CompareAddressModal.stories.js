@@ -1,12 +1,10 @@
 import { ref } from 'vue';
-import FigCompareAddressModal from './CompareAddressModal.vue';
-import FigButton from '../button/Button.vue';
+import { FigCompareAddressModal, FigButton } from '../../../index.js';
 
 export default {
     title: 'Components/CompareAddressModal',
     component: FigCompareAddressModal,
     argTypes: {
-
     }
 };
 

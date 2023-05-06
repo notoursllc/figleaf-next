@@ -1,5 +1,5 @@
 import { ref, reactive } from 'vue';
-import FigFormMultiSelect from './FormMultiSelect.vue';
+import { FigFormMultiSelect } from '../../../../index.js';
 import { formSelectSizes } from './constants.js';
 
 export default {

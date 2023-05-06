@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import FigFormInputMoney from './FormInputMoney.vue';
+import { FigFormInputMoney } from '../../../../index.js';
 import {
     formInputSizes
 } from '../inputConstants.js';

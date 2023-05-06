@@ -1,4 +1,4 @@
-import FigIcon from './FigIcon.vue';
+import { FigIcon } from '../../../index.js';
 import { figIconVariants } from './constants';
 import svgFileNames from './svgFileNames.js'
 

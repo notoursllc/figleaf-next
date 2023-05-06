@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import FigFormInputDate from './FormInputDate.vue';
+import { FigFormInputDate } from '../../../../index.js';
 
 export default {
     title: 'Components/Form/DateTime',

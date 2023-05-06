@@ -1,6 +1,5 @@
 import { ref } from 'vue';
-import FigFormInputNumber from './FormInputNumber.vue';
-
+import { FigFormInputNumber } from '../../../../index.js';
 import {
     formInputSizes
 } from '../inputConstants.js';

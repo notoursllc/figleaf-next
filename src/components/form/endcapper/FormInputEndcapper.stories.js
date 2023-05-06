@@ -1,5 +1,7 @@
-import FigFormInputEndcapper from './FormInputEndcapper.vue';
-import FigFormText from '../text/FormText.vue';
+import {
+    FigFormInputEndcapper,
+    FigFormText
+} from '../../../../index.js';
 
 export default {
     title: 'Components/Form/Endcapper',
@@ -8,7 +10,6 @@ export default {
 
     }
 };
-
 
 const Template = (args, { argTypes }) => ({
     props: Object.keys(argTypes),
@@ -42,7 +43,3 @@ const Template = (args, { argTypes }) => ({
 export const WithPrefix = Template.bind({});
 WithPrefix.args = {
 };
-
-
-
-

@@ -67,9 +67,9 @@ const props = defineProps({
     }
 });
 
-const emit = [
+const emit = defineEmits([
     'save'
-];
+]);
 
 defineExpose({
     show,
@@ -131,7 +131,6 @@ watch(
 <template>
     <fig-modal
         ref="compare_address_modal"
-        v-bind="$attrs"
         size="md"
         :close-button="false"
         :escape-to-close="false">

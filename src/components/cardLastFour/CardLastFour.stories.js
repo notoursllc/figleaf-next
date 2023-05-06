@@ -1,4 +1,4 @@
-import FigCardLastFour from './CardLastFour.vue';
+import { FigCardLastFour } from '../../../index.js';
 import { cardTypes } from '../icon/creditCard/constants.js';
 
 export default {

@@ -1,5 +1,5 @@
 import { reactive, ref } from 'vue';
-import FigAddressForm from './AddressForm.vue';
+import { FigAddressForm } from '../../../index.js';
 
 export default {
     title: 'Components/AddressForm',

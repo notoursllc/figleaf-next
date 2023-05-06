@@ -1,10 +1,9 @@
-import FigCurrency from './Currency.vue';
+import { FigCurrency } from '../../../index.js';
 
 export default {
     title: 'Components/Currency',
     component: FigCurrency,
     argTypes: {
-
     }
 };
 

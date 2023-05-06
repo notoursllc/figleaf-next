@@ -1,4 +1,4 @@
-import FigContent from './Content.vue';
+import { FigContent } from '../../../index.js';
 import { contentSizes } from './constants';
 
 export default {

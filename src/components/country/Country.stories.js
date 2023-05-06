@@ -1,4 +1,4 @@
-import FigCountry from './Country.vue';
+import { FigCountry } from '../../../index.js';
 import useCountry from './useCountry.js';
 
 const { getCountries } = useCountry();

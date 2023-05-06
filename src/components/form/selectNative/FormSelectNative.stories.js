@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import FigFormSelectNative from './FormSelectNative.vue';
+import { FigFormSelectNative } from '../../../../index.js';
 import {
     formInputSizes
 } from '../inputConstants.js';

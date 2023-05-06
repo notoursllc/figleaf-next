@@ -1,7 +1,6 @@
 import { ref } from 'vue';
-import FigFormSelectBitwise from './FormSelectBitwise.vue';
+import { FigFormSelectBitwise } from '../../../../index.js';
 import { formInputSizes } from '../inputConstants.js';
-
 
 export default {
     title: 'Components/Form/SelectBitwise',

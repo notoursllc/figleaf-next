@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import FigFormCheckbox from './FormCheckbox.vue';
+import { FigFormCheckbox } from '../../../../index.js';
 
 export default {
     title: 'Components/Form/Checkbox',

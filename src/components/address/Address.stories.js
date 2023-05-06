@@ -1,4 +1,4 @@
-import FigAddress from './Address.vue';
+import { FigAddress } from '../../../index.js';
 
 export default {
     title: 'Components/Address',

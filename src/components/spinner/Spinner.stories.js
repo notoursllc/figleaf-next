@@ -1,4 +1,4 @@
-import FigSpinner from './Spinner.vue';
+import { FigSpinner } from '../../../index.js';
 
 export default {
     title: 'Components/Spinner',
@@ -32,5 +32,4 @@ const Template = (args, { argTypes }) => ({
 });
 
 export const Spinner = Template.bind({});
-// Spinner.storyName = 'icon on the left';
 Spinner.args = {};

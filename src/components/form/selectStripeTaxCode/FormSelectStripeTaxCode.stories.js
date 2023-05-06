@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import FigFormSelectStripeTaxCode from './FormSelectStripeTaxCode.vue';
+import { FigFormSelectStripeTaxCode } from '../../../../index.js';
 import {
     formInputSizes
 } from '../inputConstants.js';

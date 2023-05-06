@@ -1,4 +1,6 @@
-import FigBadge from './Badge.vue';
+// import FigBadge from './Badge.vue';
+import { FigBadge } from '../../../index.js';
+
 import {
     badgeVariants,
     badgeSizes

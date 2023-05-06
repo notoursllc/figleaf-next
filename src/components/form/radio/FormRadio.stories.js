@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import FigFormRadio from './FormRadio.vue';
+import { FigFormRadio } from '../../../../index.js';
 
 export default {
     title: 'Components/Form/Radio',

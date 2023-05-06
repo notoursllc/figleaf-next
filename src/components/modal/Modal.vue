@@ -5,7 +5,7 @@ export default {
 </script>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { onKeyStroke } from '@vueuse/core';
 import FigButton from '../button/Button.vue';
 import { modalSizes } from './constants.js';
@@ -39,24 +39,15 @@ defineExpose({
 const visible = ref(false);
 const modalContainer = ref(null);
 
-function widthClass() {
-    switch(props.size) {
-        case modalSizes.sm:
-            return 'max-w-xs';
-
-        case modalSizes.lg:
-            return 'max-w-3xl';
-
-        case modalSizes.xl:
-            return 'max-w-6xl';
-
-        case modalSizes.full:
-            return  'width_98';
-
-        default:
-            return 'max-w-lg';
+const classes = computed(() => {
+    return {
+        'fig-modal': true,
+        'fig-modal-sm': props.size === modalSizes.sm,
+        'fig-modal-lg': props.size === modalSizes.lg,
+        'fig-modal-xl': props.size === modalSizes.xl,
+        'fig-modal-full': props.size === modalSizes.full
     }
-}
+});
 
 function emitVisible() {
     emit('visible', visible.value);
@@ -98,10 +89,7 @@ onMounted(() => {
             class="overflow-x-hidden overflow-y-auto fixed top-0 left-0 w-full h-full z-50 outline-none focus:outline-none">
 
             <!--content-->
-            <div
-                class="relative w-auto my-6 mx-auto border-0 rounded-md shadow-lg bg-white outline-none focus:outline-none"
-                :class="widthClass">
-
+            <div :class="classes">
                 <!--header-->
                 <div
                     v-if="$slots.header || closeButton"
@@ -140,7 +128,21 @@ onMounted(() => {
 
 
 <style scoped>
-.width_98 {
+.fig-modal {
+    @apply relative w-auto my-6 mx-auto border-0 rounded-md shadow-lg bg-white outline-none focus:outline-none max-w-lg;
+}
+
+/* sizes */
+.fig-modal-sm {
+    @apply max-w-xs;
+}
+.fig-modal-lg {
+    @apply max-w-3xl;
+}
+.fig-modal-xl {
+    @apply max-w-6xl;
+}
+.fig-modal-full {
     width: 98%;
 }
 </style>
