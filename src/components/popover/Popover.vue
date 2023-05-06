@@ -1,219 +1,240 @@
 <script>
-import { createPopper } from '@popperjs/core';
-import vClickOutside from 'v-click-outside';
-import popover_mixin from './popover_mixin';
-import { popoverDisplayAction } from './constants';
-
-
 export default {
-    name: 'Popover',
+    name: 'Popover'
+}
+</script>
 
-    directives: {
-        clickOutside: vClickOutside.directive
-    },
+<script setup>
+import { ref, computed, useSlots, watch, onMounted } from 'vue';
+import { createPopper } from '@popperjs/core';
+import isFunction from 'lodash.isfunction';
+import { onClickOutside, onKeyStroke } from '@vueuse/core';
+import { popoverProps } from './constants';
 
-    mixins: [
-        popover_mixin
-    ],
+const props = defineProps(popoverProps);
 
-    props: {
-        // props are coming from the mixin
-    },
+const emit = defineEmits([
+    'visible'
+]);
 
-    data() {
-        return {
-            visible: this.show
-        };
-    },
+const slots = useSlots();
 
-    watch: {
-        show: {
-            handler(val) {
-                this.setVisible(val);
-            }
-        },
+let popper = null;
+const visible = ref(false);
+const popperContainer = ref(null);
+const popoverTarget = ref(null);
+const arrow = ref(null);
+const menu = ref(null);
 
-        visible: {
-            handler (val) {
-                val ? this.createPopper() : this.removePopper();
-                // this.$emit('update:show', val)
-            },
-            immediate: true
-        }
-    },
-
-    computed: {
-        defaultPopperOptions () {
-            return {
-                strategy: 'fixed',
-                placement: this.placement,
-                modifiers: [
-                    {
-                        name: 'offset',
-                        options: {
-                            offset: this.offset
-                        }
-                    },
-                    {
-                        name: 'flip',
-                        enabled: this.flip
-                    },
-                    {
-                        name: 'preventOverflow',
-                        options: {
-                            padding: 10
-                        }
-                    },
-                    {
-                        name: 'arrow',
-                        options: {
-                            enabled: true,
-                            element: this.$refs.arrow
-                        }
-                    }
-                ]
-            };
-        },
-
-        ariaAttrs () {
-            return {
-                'aria-expanded': this.visible ? 'true' : 'false',
-                'aria-haspopup': 'true'
-            };
-        },
-
-        propTarget() {
-            if(this.target) {
-                return this.target.$el || this.target;
-            }
-            return null;
-        }
-    },
-
-
-    methods: {
-        setVisible(visible) {
-            this.visible = !!visible;
-            this.$emit('visible', this.visible);
-        },
-
-        togglerExists(e) {
-            return this.$scopedSlots.toggler && this.$el.firstElementChild.contains(e.target);
-        },
-
-        checkClick(e) {
-            if (this.togglerExists(e) && this.displayAction === popoverDisplayAction.click) {
-                this.toggle(e);
-            }
-        },
-
-        checkMouseOver(e) {
-            if (this.togglerExists(e) && this.displayAction === popoverDisplayAction.mouseover) {
-                this.setVisible(true);
-            }
-        },
-
-        checkMouseOut(e) {
-            if (this.togglerExists(e) && this.displayAction === popoverDisplayAction.mouseover) {
-                this.setVisible(false);
-            }
-        },
-
-        hide() {
-            this.setVisible(false);
-        },
-
-        toggle(e) {
-            e.preventDefault();
-            this.setVisible(!this.visible);
-        },
-
-        onClickOutside(e) {
-            // If the target property is set and the click target is not contained in the prop target element
-            // then hide the popup
-            if (this.propTarget && !this.propTarget.contains(e.target)) {
-                this.hide();
-            }
-            else if (this.$scopedSlots.toggler && !this.$el.firstElementChild.contains(e.target)) {
-                this.hide();
-            }
-        },
-
-        removePopper() {
-            if (this._popper) {
-                this._popper.destroy();
-            }
-            this._popper = null;
-        },
-
-        createPopper() {
-            this.removePopper();
-
-            if (this.disabled) {
-                this.hide();
-                return;
-            };
-
-            const targetEl = this.propTarget || this.$el.firstChild;
-
-            this.$nextTick(() => {
-                this._popper = createPopper(
-                    targetEl,
-                    this.$refs.menu,
-                    this.customPopperOptions || this.defaultPopperOptions
-                );
-            });
-        }
+const propTarget = computed(() => {
+    if (isFunction(props.target)) {
+        const t = props.target();
+        return t.value || t;
     }
-};
+
+    if (props.target) {
+        return props.target.value || props.target;
+    }
+
+    return null;
+});
+
+const defaultPopperOptions = computed(() => {
+    return {
+        strategy: 'fixed',
+        placement: props.placement,
+        modifiers: [
+            {
+                name: 'offset',
+                options: {
+                    offset: props.offset
+                }
+            },
+            {
+                name: 'flip',
+                enabled: props.flip
+            },
+            {
+                name: 'preventOverflow',
+                options: {
+                    padding: 10
+                }
+            },
+            {
+                name: 'arrow',
+                options: {
+                    enabled: true,
+                    element: arrow.value
+                }
+            }
+        ]
+    };
+});
+
+const ariaAttrs = computed(() => {
+    return {
+        'aria-expanded': visible.value ? 'true' : 'false',
+        'aria-haspopup': 'true'
+    };
+});
+
+function setVisible(isVisible) {
+    visible.value = !!isVisible;
+    emit('visible', visible.value);
+}
+
+function removePopper() {
+    if(popper) {
+        popper.destroy();
+    }
+    popper = null;
+}
+
+function buildPopper() {
+    removePopper();
+
+    if (props.disabled) {
+        setVisible(false);
+        return;
+    }
+
+    popper = createPopper(
+        popoverTarget.value,
+        menu.value,
+        props.customPopperOptions || defaultPopperOptions.value
+    );
+}
+
+function setDisplay(isVisible) {
+    return isVisible ? buildPopper() : removePopper();
+}
+
+function toggle(e) {
+    e?.preventDefault();
+    setVisible(!visible.value);
+    setDisplay(visible.value);
+}
+
+function hide() {
+    setVisible(false);
+    setDisplay(false);
+}
+
+function show() {
+    setVisible(true);
+    setDisplay(true);
+}
+
+function checkClick(e) {
+    if (slots.toggler() && e.target?.parentElement?.contains(e.target)) {
+        toggle(e);
+        return;
+    }
+
+    if (propTarget?.value && e.target === propTarget.value) {
+        toggle(e);
+        return;
+    }
+
+    if (isFunction(slots.toggler)
+        && slots.toggler()
+        && popoverTarget.value?.contains(e.target)) {
+        toggle(e);
+    }
+}
+
+function processClickOutside(e) {
+    if (!visible.value) {
+        return;
+    }
+
+    // If the user has defined a target prop, then all clicks on that target
+    // will be considered 'outside' of the root element of this component.
+    // In that case, if the target of the click is that outwide target, then do nothing.
+    if (propTarget?.value && e.target === propTarget.value) {
+        return;
+    }
+
+    const containsTarget = popoverTarget.value?.contains(e.target);
+
+    if (popoverTarget.value && !containsTarget) {
+        hide();
+    }
+    else if (slots.toggler() && !containsTarget) {
+        hide();
+    }
+}
+
+watch(
+    () => props.target,
+    (val) => {
+        propTarget.value?.addEventListener('click', checkClick, false);
+    }
+);
+
+onMounted(() => {
+    onClickOutside(popperContainer.value, processClickOutside);
+    onKeyStroke('Escape', hide, { target: document });
+});
 </script>
 
 
 <template>
     <div
-        v-click-outside="onClickOutside"
-        @click="checkClick($event)"
-        @mouseover="checkMouseOver($event)"
-        @mouseout="checkMouseOut($event)"
-        class="relative inline-flex">
-        <div class="leading-none"><slot name="toggler" :aria-attrs="ariaAttrs"></slot></div>
-
+        ref="popperContainer"
+        class="fig-popover"
+        @click="checkClick">
+        <div
+            ref="popoverTarget"
+            class="leading-none"><slot name="toggler" :aria-attrs="ariaAttrs"></slot></div>
         <div
             ref="menu"
-            class="bg-white text-base text-gray-700 z-50 list-none text-left rounded mt-1 max-w-md border border-gray-300 shadow-tight"
-            :class="{hidden: !visible, block: visible}">
+            class="fig-popover-wrapper shadow-tight"
+            :class="{'hidden': !visible, 'block': visible}"
+            :aria-hidden="!visible">
             <div ref="arrow" class="arrow"></div>
-
             <!-- header -->
             <div
                 v-if="$slots.header"
-                class="px-2 py-1 border-solid border-b border-gray-300 bg-gray-100 font-medium"><slot name="header"></slot></div>
+                class="fig-popover-gutter border-b"><slot name="header"></slot></div>
 
-            <div class="px-3 py-2 text-sm"><slot></slot></div>
+            <slot></slot>
 
             <!-- footer -->
             <div
                 v-if="$slots.footer"
-                class="p-2 text-sm border-solid border-t border-gray-300 bg-gray-100"><slot name="footer"></slot></div>
+                class="fig-popover-gutter border-t"><slot name="footer"></slot></div>
         </div>
     </div>
 </template>
 
 
 <style scoped>
+.fig-popover {
+    @apply relative inline-flex align-middle;
+}
+
+.fig-popover-wrapper {
+    @apply bg-white text-base z-50 float-left list-none text-left rounded mt-1;
+}
+
+.fig-popover-gutter {
+    @apply px-2 py-1 text-sm border-solid border-gray-300 bg-gray-100;
+}
+
 /* https://popper.js.org/docs/v2/tutorial/#arrow */
 .arrow,
 .arrow::before {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  z-index: -1;
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    z-index: -1;
 }
 
 .arrow::before {
   content: '';
   transform: rotate(45deg);
-  @apply bg-gray-100;
+  @apply bg-white;
 }
 
 [data-popper-placement^='top'] > .arrow {

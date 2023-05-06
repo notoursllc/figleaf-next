@@ -1,4 +1,4 @@
-export const popoverPositions = {
+export const popoverPlacements = {
     'top-end': 'top-end',
     top: 'top',
     'top-start': 'top-start',
@@ -16,4 +16,36 @@ export const popoverPositions = {
 export const popoverDisplayAction = {
     click: 'click',
     mouseover: 'mouseover'
+};
+
+export const popoverProps = {
+    placement: {
+        type: String,
+        validator: (position) => {
+            return Object.keys(popoverPlacements).includes(position);
+        },
+        default: popoverPlacements['bottom-start'],
+    },
+
+    disabled: {
+        type: Boolean,
+        default: false
+    },
+
+    offset: {
+        type: Array,
+        default: () => [0, 8]
+    },
+
+    flip: {
+        type: Boolean,
+        default: true
+    },
+
+    customPopperOptions: {
+        type: Object,
+        default: null
+    },
+
+    target: {}
 };

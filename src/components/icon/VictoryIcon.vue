@@ -1,26 +1,27 @@
 <script>
 export default {
-    name: 'VictoryIcon',
-
-    props: {
-        width: {
-            type: [String, Number],
-            default: 50
-        },
-
-        height: {
-            type: [String, Number],
-            default: 50
-        },
-
-        fill: {
-            type: String,
-            default: '#fff'
-        }
-    }
-};
+    name: 'VictoryIcon'
+}
 </script>
 
+<script setup>
+const props = defineProps({
+    width: {
+        type: [String, Number],
+        default: 50
+    },
+
+    height: {
+        type: [String, Number],
+        default: 50
+    },
+
+    fill: {
+        type: String,
+        default: '#fff'
+    }
+});
+</script>
 
 <template>
     <svg xmlns="http://www.w3.org/2000/svg" :width="width" :height="height" viewBox="0 0 63.3 31" :fill="fill">

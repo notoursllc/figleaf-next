@@ -37,8 +37,7 @@ export { default as FigFormSelectNative } from './src/components/form/selectNati
 export { default as FigFormSelectStripeTaxCode } from './src/components/form/selectStripeTaxCode/FormSelectStripeTaxCode.vue';
 export { default as FigFormTextarea } from './src/components/form/textarea/FormTextarea.vue';
 
-// header
-// export { default as FigHeader } from './src/components/header/Header.vue';
+export { default as FigHeader } from './src/components/header/Header.vue';
 
 // hero
 // export { default as FigHero } from './src/components/hero/Hero.vue';
@@ -50,7 +49,7 @@ export { default as FigFormTextarea } from './src/components/form/textarea/FormT
 // icon
 export { default as FigIcon } from './src/components/icon/FigIcon.vue';
 // export { default as FigIconSprite } from './src/components/icon/SvgSprite.vue';
-// export { default as FigVictoryIcon } from './src/components/icon/VictoryIcon.vue';
+export { default as FigVictoryIcon } from './src/components/icon/VictoryIcon.vue';
 // export { default as FigCreditCardIcon } from './src/components/icon/creditCard/CreditCard.vue';
 // export { default as FigBvLogo } from './src/components/icon/BvLogo.vue';
 // export { default as FigIconLabel } from './src/components/iconLabel/IconLabel.vue';
@@ -103,8 +102,9 @@ export { default as FigModal } from './src/components/modal/Modal.vue';
 // export { default as FigProductGrid } from './src/components/productGrid/ProductGrid.vue';
 
 // popover
-// export { default as FigPopover } from './src/components/popover/Popover.vue';
-// export { default as FigPopoverDivider } from './src/components/popover/PopoverDivider.vue';
+export { default as FigPopover } from './src/components/popover/Popover.vue';
+export { default as FigPopoverDivider } from './src/components/popover/PopoverDivider.vue';
+export { default as FigPopoverContent } from './src/components/popover/PopoverContent.vue';
 // export { default as FigPopConfirm } from './src/components/popConfirm/PopConfirm.vue';
 
 // overlay

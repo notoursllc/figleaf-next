@@ -1,4 +1,10 @@
+<script>
+export default {
+    name: 'Dropdown'
+}
+</script>
 
+<script setup>
 <script>
 // this component was heavily influenced by:
 // https://raw.githubusercontent.com/coreui/coreui-vue/master/src/components/dropdown/CDropdown.vue
@@ -7,10 +13,8 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { createPopper } from '@popperjs/core';
 import vNodes from '../vnodes/VNodes.vue';
-import useDropdown from './useDropdown.js';
 import { onClickOutside, onKeyStroke } from '@vueuse/core'; // https://vueuse.org/core/onKeyStroke/#onkeystroke
-
-const { dropdownProps } = useDropdown();
+import { popoverProps } from '../popover/constants.js';
 
 export default {
     name: 'Dropdown',
@@ -20,7 +24,7 @@ export default {
     },
 
     props: {
-        ...dropdownProps
+        ...popoverProps
     },
 
     emits: ['selected'],
