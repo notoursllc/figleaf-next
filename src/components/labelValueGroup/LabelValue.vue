@@ -1,21 +1,24 @@
 <script>
 export default {
-    name: 'LabelValue',
+    name: 'LabelValue'
+}
+</script>
 
-    props: {
-        valueClasses: {
-            type: Array,
-            default: () => {
-                return [];
-            }
-        },
 
-        required: {
-            type: Boolean,
-            default: false
+<script setup>
+const props = defineProps({
+    valueClasses: {
+        type: Array,
+        default: () => {
+            return [];
         }
+    },
+
+    required: {
+        type: Boolean,
+        default: false
     }
-};
+});
 </script>
 
 

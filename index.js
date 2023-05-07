@@ -5,11 +5,13 @@ export { default as FigBadge } from './src/components/badge/Badge.vue';
 export { default as FigBunnyVideoPlayer } from './src/components/bunnyVideoPlayer/BunnyVideoPlayer.vue';
 export { default as FigButton } from './src/components/button/Button.vue';
 export { default as FigButtonFab } from './src/components/buttonFab/ButtonFab.vue';
+export { default as FigBvLogo } from './src/components/bvlogo/BvLogo.vue';
 
 export { default as FigCardLastFour } from './src/components/cardLastFour/CardLastFour.vue';
 export { default as FigCompareAddressModal } from './src/components/compareAddressModal/CompareAddressModal.vue';
 export { default as FigContent } from './src/components/content/Content.vue';
 export { default as FigCountry } from './src/components/country/Country.vue';
+export { default as FigCreditCardIcon } from './src/components/icon/creditCard/CreditCard.vue';
 export { default as FigCurrency } from './src/components/currency/Currency.vue';
 export { default as FigCurrencySymbol } from './src/components/currencySymbol/CurrencySymbol.vue';
 
@@ -38,9 +40,7 @@ export { default as FigFormSelectStripeTaxCode } from './src/components/form/sel
 export { default as FigFormTextarea } from './src/components/form/textarea/FormTextarea.vue';
 
 export { default as FigHeader } from './src/components/header/Header.vue';
-
-// hero
-// export { default as FigHero } from './src/components/hero/Hero.vue';
+export { default as FigHero } from './src/components/hero/Hero.vue';
 
 // hero slider
 // export { default as FigHeroSlider } from './src/components/heroSlider/HeroSlider.vue';
@@ -48,95 +48,59 @@ export { default as FigHeader } from './src/components/header/Header.vue';
 
 // icon
 export { default as FigIcon } from './src/components/icon/FigIcon.vue';
-// export { default as FigIconSprite } from './src/components/icon/SvgSprite.vue';
+export { default as FigIconLabel } from './src/components/iconLabel/IconLabel.vue';
+export { default as FigIconSprite } from './src/components/icon/SvgSprite.vue';
 export { default as FigVictoryIcon } from './src/components/icon/VictoryIcon.vue';
-// export { default as FigCreditCardIcon } from './src/components/icon/creditCard/CreditCard.vue';
-// export { default as FigBvLogo } from './src/components/icon/BvLogo.vue';
-// export { default as FigIconLabel } from './src/components/iconLabel/IconLabel.vue';
+
+export { default as FigLabelValueGroup } from './src/components/labelValueGroup/LabelValueGroup.vue';
+export { default as FigLabelValue } from './src/components/labelValueGroup/LabelValue.vue';
 
 
 // layouts
-// export { default as FigCartCtaLayout } from './src/layouts/cartCta/CartCtaLayout.vue';
-// export { default as FigPackingSlipLayout } from './src/layouts/packingSlip/PackingSlipLayout.vue';
-// export { default as FigProductDetailsLayout } from './src/layouts/productDetailsLayout/ProductDetailsLayout.vue';
-// export { default as FigSpecLayout } from './src/layouts/spec/SpecLayout.vue';
-// export { default as FigSpec } from './src/layouts/spec/Spec.vue';
+export { default as FigCartCtaLayout } from './src/layouts/cartCta/CartCtaLayout.vue';
+export { default as FigPackingSlipLayout } from './src/layouts/packingSlip/PackingSlipLayout.vue';
+export { default as FigProductDetailsLayout } from './src/layouts/productDetailsLayout/ProductDetailsLayout.vue';
+export { default as FigSpecLayout } from './src/layouts/spec/SpecLayout.vue';
+export { default as FigSpec } from './src/layouts/spec/Spec.vue';
 
-// label value group
-// export { default as FigLabelValueGroup } from './src/components/labelValueGroup/LabelValueGroup.vue';
-// export { default as FigLabelValue } from './src/components/labelValueGroup/LabelValue.vue';
-
-// message
-// export { default as FigMessage } from './src/components/message/Message.vue';
-
-// modal
+export { default as FigMessage } from './src/components/message/Message.vue';
 export { default as FigModal } from './src/components/modal/Modal.vue';
-
-// meta data builder
 // export { default as FigMetaDataBuilder } from './src/components/metaDataBuilder/MetaDataBuilder.vue'
+export { default as FigMoney } from './src/components/money/Money.vue';
 
-// money
-// export { default as FigMoney } from './src/components/money/Money.vue';
-
-// nuxtImgBunny
 // export { default as FigNuxtImgBunny } from './src/components/nuxtImgBunny/NuxtImgBunny.vue';
 
-// operations dropdown
-// export { default as FigOperationsDropdown } from './src/components/operationsDropdown/OperationsDropdown.vue';
+export { default as FigOperationsDropdown } from './src/components/operationsDropdown/OperationsDropdown.vue';
+export { default as FigOverlay } from './src/components/overlay/Overlay.vue';
 
-// pagination
 // export { default as FigPaginationBar } from './src/components/pagination/pagination-bar/PaginationBar.vue';
 // export { default as FigPaginator } from './src/components/pagination/paginator/Paginator.vue';
 // export { default as FigPaginationWrapper } from './src/components/pagination/paginationWrapper/PaginationWrapper.vue';
-
-// payment type chooser
-// export { default as FigPaymentTypeChooser } from './src/components/paymentTypeChooser/PaymentTypeChooser.vue';
-
-// percentage
-// export { default as FigPercentage } from './src/components/percentage/Percentage.vue';
-
-// photo manager
+export { default as FigPaymentTypeChooser } from './src/components/paymentTypeChooser/PaymentTypeChooser.vue';
+export { default as FigPercentage } from './src/components/percentage/Percentage.vue';
 // export { default as FigPhotoManager } from './src/components/photoManager/PhotoManager.vue';
-
-// product grid
-// export { default as FigProductGrid } from './src/components/productGrid/ProductGrid.vue';
-
-// popover
+export { default as FigProductGrid } from './src/components/productGrid/ProductGrid.vue';
 export { default as FigPopover } from './src/components/popover/Popover.vue';
 export { default as FigPopoverDivider } from './src/components/popover/PopoverDivider.vue';
 export { default as FigPopoverContent } from './src/components/popover/PopoverContent.vue';
-// export { default as FigPopConfirm } from './src/components/popConfirm/PopConfirm.vue';
+export { default as FigPopConfirm } from './src/components/popConfirm/PopConfirm.vue';
 
-// overlay
-// export { default as FigOverlay } from './src/components/overlay/Overlay.vue';
-export { default as FigSpinner } from './src/components/spinner/Spinner.vue';
-
-// required
-// export { default as FigRequired } from './src/components/form/Required.vue';
-
-// row builder
+export { default as FigRequired } from './src/components/form/required/Required.vue';
 // export { default as FigRowBuilder } from './src/components/rowBuilder/RowBuilder.vue';
 
-// signpost
 // export { default as FigSignpost } from './src/components/signpost/Signpost.vue';
-
-// slideover
 // export { default as FigSlideover } from './src/components/slideover/Slideover.vue';
-
-// slider
 // export { default as FigSlider } from './src/components/slider/Slider.vue';
-
-// stock level warning
-// export { default as FigStockLevelWarning} from './src/components/stockLevelWarning/StockLevelWarning.vue';
-
-// stripe
+export { default as FigSpinner } from './src/components/spinner/Spinner.vue';
+export { default as FigStockLevelWarning} from './src/components/stockLevelWarning/StockLevelWarning.vue';
 // export { default as FigStripeForm } from './src/components/stripeForm/StripeForm.vue';
+export { default as FigSizeButtons } from './src/components/sizeButtons/SizeButtons.vue';
+export { default as FigSelectCountry } from './src/components/selectCountry/SelectCountry.vue';
+// export { default as FigSelectStateProvince } from './src/components/selectStateProvince/SelectStateProvince.vue';
 
-// tabs
+
 // export { default as FigTabPanel } from './src/components/tabView/TabPanel.vue';
 // export { default as FigTabView } from './src/components/tabView/TabView.vue';
-
-// tag
 // export { default as FigTag } from './src/components/tag/Tag.vue';
 // export { default as FigBooleanTag } from './src/components/tag/BooleanTag.vue';
 
@@ -146,28 +110,13 @@ export { default as FigSpinner } from './src/components/spinner/Spinner.vue';
 // export { default as FigTh } from './src/components/tableSimple/Th.vue';
 // export { default as FigTr } from './src/components/tableSimple/Tr.vue';
 // export { default as FigTrNoResults } from './src/components/tableSimple/TrNoResults.vue';
-
-// texas toast
 // export { default as FigTexasToast } from './src/components/texasToast/TexasToast.vue';
-
-// text card
 // export { default as FigTextCard } from './src/components/textCard/TextCard.vue';
-
-// tooltip
 // export { default as FigTooltip } from './src/components/tooltip/Tooltip.vue';
 // export { default as FigTooltipDivider } from './src/components/tooltip/TooltipDivider.vue';
 
-
-// size buttons
-// export { default as FigSizeButtons } from './src/components/sizeButtons/SizeButtons.vue';
-
-// export { default as FigSelectCountry } from './src/components/selectCountry/SelectCountry.vue';
-// export { default as FigSelectStateProvince } from './src/components/selectStateProvince/SelectStateProvince.vue';
-
-// vnodes
 export { default as FigVNodes } from './src/components/vNodes/VNodes.vue';
 
-// youtube
 // export { default as FigYouTube } from './src/components/youtube/Youtube.vue';
 
 // directives
@@ -176,5 +125,5 @@ export { default as FigVNodes } from './src/components/vNodes/VNodes.vue';
 // composition functions
 // export { default as FigUseCountry } from './src/components/country/useCountry.js';
 // export { default as FigUseUtils } from './src/composables/useUtils.js';
-// export { default as FigUseTime } from './src/composables/useTime.js';
+export { default as FigUseTime } from './src/composables/useTime.js';
 // export { default as FigUseCurrency } from './src/components/currency/useCurrency.js';

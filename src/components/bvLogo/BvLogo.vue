@@ -1,25 +1,26 @@
-
 <script>
 export default {
-    name: 'BvLogo',
+    name: 'BvLogo'
+}
+</script>
 
-    props: {
-        width: {
-            type: [String, Number],
-            default: 100
-        },
+<script setup>
+const props = defineProps({
+    width: {
+        type: [String, Number],
+        default: 100
+    },
 
-        height: {
-            type: [String, Number],
-            default: 56
-        },
+    height: {
+        type: [String, Number],
+        default: 56
+    },
 
-        fill: {
-            type: String,
-            default: '#414141'
-        }
+    fill: {
+        type: String,
+        default: '#414141'
     }
-};
+});
 </script>
 
 <template>

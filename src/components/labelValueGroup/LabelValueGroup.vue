@@ -1,43 +1,44 @@
 <script>
+export default {
+    name: 'LabelValueGroup'
+}
+</script>
+
+<script setup>
+import { computed } from 'vue';
 import {
     labelValueGroupBreakpoints,
     labelValueGroupDensity,
     labelValueGroupDisplay } from './constants.js';
 
-export default {
-    name: 'LabelValueGroup',
-
-    props: {
-        display: {
-            type: String,
-            default: labelValueGroupDisplay.block,
-            validator: (value) => Object.keys(labelValueGroupDisplay).includes(value)
-        },
-
-        breakpoint: {
-            type: String,
-            default: labelValueGroupBreakpoints.sm,
-            validator: (value) => Object.keys(labelValueGroupBreakpoints).includes(value)
-        },
-
-        density: {
-            type: String,
-            default: labelValueGroupDensity.sm,
-            validator: (value) => Object.keys(labelValueGroupDensity).includes(value)
-        }
+const props = defineProps({
+    display: {
+        type: String,
+        default: labelValueGroupDisplay.block,
+        validator: (value) => Object.keys(labelValueGroupDisplay).includes(value)
     },
 
-    computed: {
-        classNames() {
-            return [
-                'fig-lvg',
-                `fig-lvg-${this.display}`,
-                `fig-lvg-density-${this.density}`,
-                `fig-lvg-breakpoint-${this.breakpoint}`,
-            ];
-        }
+    breakpoint: {
+        type: String,
+        default: labelValueGroupBreakpoints.sm,
+        validator: (value) => Object.keys(labelValueGroupBreakpoints).includes(value)
+    },
+
+    density: {
+        type: String,
+        default: labelValueGroupDensity.sm,
+        validator: (value) => Object.keys(labelValueGroupDensity).includes(value)
     }
-};
+});
+
+const classNames = computed(() => {
+    return [
+        'fig-lvg',
+        `fig-lvg-${props.display}`,
+        `fig-lvg-density-${props.density}`,
+        `fig-lvg-breakpoint-${props.breakpoint}`,
+    ];
+});
 </script>
 
 

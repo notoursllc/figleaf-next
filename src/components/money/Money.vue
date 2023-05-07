@@ -1,24 +1,26 @@
 <script>
 export default {
-    name: 'Money',
+    name: 'Money'
+}
+</script>
 
-    props: {
-        cents: {
-            type: [String, Number],
-            default: 0
-        }
-    },
+<script setup>
+import { computed } from 'vue';
 
-    computed: {
-        dinero: function() {
-            const val = parseInt(this.cents, 10);
-            if(!isNaN(val) && val > 0) {
-                return val/100;
-            }
-            return 0;
-        }
+const props = defineProps({
+    cents: {
+        type: [String, Number],
+        default: 0
     }
-};
+});
+
+const dinero = computed(() => {
+    const val = parseInt(props.cents, 10);
+    if(!isNaN(val) && val > 0) {
+        return val/100;
+    }
+    return 0;
+});
 </script>
 
 <template>

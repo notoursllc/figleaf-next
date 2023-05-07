@@ -1,90 +1,54 @@
 <script>
-import { v4 as uuidv4 } from 'uuid';
-import FigButton from '../button/Button';
-import FigPopover from '../popover/Popover';
-
 export default {
-    components: {
-        FigButton,
-        FigPopover
+    name: 'PopConfirm'
+}
+</script>
+
+<script setup>
+import { ref, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
+import FigButton from '../button/Button.vue';
+import FigPopover from '../popover/Popover.vue';
+import { popoverProps } from '../popover/constants.js';
+
+const props = defineProps({
+    showConfirmButton: {
+        type: Boolean,
+        default: true
     },
 
-    inheritAttrs: false,
-
-    props: {
-        showConfirmButton: {
-            type: Boolean,
-            default: true
-        },
-
-        showCancelButton: {
-            type: Boolean,
-            default: true
-        },
-
-        confirmButtonLabel: {
-            type: String,
-            default: ''
-        },
-
-        cancelButtonLabel: {
-            type: String,
-            default: ''
-        },
-
-        target: {}
+    showCancelButton: {
+        type: Boolean,
+        default: true
     },
 
-    data() {
-        return {
-            uuid: uuidv4()
-        };
-    },
+    ...popoverProps
+});
 
-    computed: {
-        confirmLabel() {
-            return this.confirmButtonLabel || this.$t('OK');
-        },
+const emit = defineEmits([
+    'confirm',
+    'cancel'
+])
 
-        cancelLabel() {
-            return this.cancelButtonLabel || this.$t('cancel');
-        },
+const { t } = useI18n();
 
-        confirmRef() {
-            return `btn-confirm-${this.uuid}`;
-        },
+const cancelButton = ref(null);
+const popoverEl = ref(null);
 
-        cancelRef() {
-            return `btn-cancel-${this.uuid}`;
-        },
+function onConfirmClick(e) {
+    emit('confirm', e);
+}
 
-        popoverRef() {
-            return `popover-target-${this.uuid}`;
-        }
-    },
+function onCancelClick(e) {
+    emit('cancel', e);
+}
 
-    methods: {
-        onConfirmClick(e) {
-            this.$emit('confirm', e);
-            this.hide();
-        },
-
-        onCancelClick(e) {
-            this.$emit('cancel', e);
-            this.hide();
-        },
-
-        focusCancelButton(isVisible) {
-            if(isVisible) {
-                this.$refs[this.cancelRef].$el.focus();
-            }
-        },
-
-        hide() {
-            this.$refs[this.popoverRef].hide();
-        }
+async function focusCancelButton(isVisible) {
+    if(cancelButton.value) {
+        await nextTick();
+        cancelButton.value.$el.focus();
     }
-};
+}
 </script>
 
 
@@ -92,8 +56,8 @@ export default {
     <fig-popover
         placement="top"
         @visible="focusCancelButton"
-        :ref="popoverRef"
-        v-bind="{ ...$attrs, ...$props }">
+        ref="popoverEl"
+        v-bind="$props">
 
         <template v-slot:toggler>
             <slot name="reference"></slot>
@@ -110,14 +74,13 @@ export default {
                     variant="link"
                     size="sm"
                     @click="onCancelClick"
-                    :ref="cancelRef">{{ cancelLabel }}</fig-button>
+                    ref="cancelButton"><slot name="cancelLabel">{{ $t('cancel') }}</slot></fig-button>
 
                 <fig-button
                     v-if="showConfirmButton"
                     variant="primary"
                     size="sm"
-                    @click="onConfirmClick"
-                    :ref="confirmRef">{{ confirmLabel }}</fig-button>
+                    @click="onConfirmClick"><slot name="confirmLabel">{{ $t('OK') }}</slot></fig-button>
             </div>
         </template>
     </fig-popover>

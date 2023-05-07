@@ -1,42 +1,42 @@
 <script>
-import accounting from 'accounting';
-
 export default {
-    name: 'Percentage',
-
-    props: {
-        value: {
-            type: [Number, String],
-            required: true
-        },
-
-        fixed: {
-            type: Number,
-            default: null,
-            required: false
-        }
-    },
-
-    computed: {
-        decimalAsPercentage() {
-            let val = parseFloat(this.value);
-
-            if(!isNaN(val)) {
-                val = `${val * 100}%`;
-
-                if(this.fixed !== null) {
-                    val = accounting.toFixed(val, this.fixed);
-                }
-
-                return val;
-            }
-
-            return '';
-        }
-    }
-};
+    name: 'Address'
+}
 </script>
 
+<script setup>
+import { computed } from 'vue';
+import accounting from 'accounting';
+
+const props = defineProps({
+    value: {
+        type: [Number, String],
+        required: true
+    },
+
+    fixed: {
+        type: Number,
+        default: null,
+        required: false
+    }
+});
+
+const decimalAsPercentage = computed(() => {
+    let val = parseFloat(props.value);
+
+    if(!isNaN(val)) {
+        val = `${val * 100}%`;
+
+        if(props.fixed !== null) {
+            val = accounting.toFixed(val, props.fixed);
+        }
+
+        return val;
+    }
+
+    return '';
+});
+</script>
 
 <template>
     <span>{{ decimalAsPercentage }}</span>

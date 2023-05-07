@@ -1,115 +1,108 @@
 <script>
-import FigIcon from '../icon/FigIcon';
+export default {
+    name: 'Message'
+}
+</script>
+
+<script setup>
+import { computed, ref, useSlots } from 'vue';
+import FigIcon from '../icon/FigIcon.vue';
 import {
     messageSizes,
     messageVariants
 } from './constants';
 
-export default {
-    name: 'Button',
-
-    components: {
-        FigIcon
+const props = defineProps({
+    size: {
+        type: String,
+        default: messageSizes.md,
+        validator: (value) => Object.keys(messageSizes).includes(value)
     },
 
-    props: {
-        size: {
-            type: String,
-            default: messageSizes.md,
-            validator: (value) => Object.keys(messageSizes).includes(value)
-        },
-
-        variant: {
-            type: String,
-            default: messageVariants.success,
-            validator: (value) => Object.keys(messageVariants).includes(value)
-        },
-
-        showIcon: {
-            type: Boolean,
-            default: true
-        },
-
-        closable: {
-            type: Boolean,
-            default: false
-        }
+    variant: {
+        type: String,
+        default: messageVariants.success,
+        validator: (value) => Object.keys(messageVariants).includes(value)
     },
 
-    data() {
-        return {
-            isVisible: true
-        };
+    showIcon: {
+        type: Boolean,
+        default: true
     },
 
-    computed: {
-        hasIcon() {
-            return this.$slots.icon || this.showIcon;
-        },
-
-        iconName() {
-            switch(this.variant) {
-                case messageVariants.error:
-                    return 'circle-x';
-
-                case messageVariants.info:
-                    return 'info-circle';
-
-                case messageVariants.warning:
-                    return 'alert-circle';
-
-                default:
-                    return 'check-circle';
-            }
-        },
-
-        classNames() {
-            const classes = [
-                'fig-message',
-                `fig-message-${this.size}`,
-                `fig-message-${this.variant}`
-            ];
-
-            if(this.hasIcon) {
-                classes.push('align-bottom');
-            }
-
-            return classes;
-        },
-
-        iconStrokeColor() {
-            switch(this.variant) {
-                case 'error':
-                    return '#73000c';
-
-                case 'info':
-                    return '#044868';
-
-                case 'warning':
-                    return '#6d5100';
-
-                default:
-                    return '#224a23';
-            }
-        },
-
-        iconWidth() {
-            switch(this.size) {
-                case messageSizes.sm:
-                    return 20;
-
-                default:
-                    return 24;
-            }
-        }
-    },
-
-    methods: {
-        onCloseClick() {
-            this.isVisible = false;
-        }
+    closable: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const slots = useSlots();
+
+const isVisible = ref(true);
+
+const hasIcon = computed(() => {
+    return slots.icon || props.showIcon;
+});
+
+const iconName = computed(() => {
+    switch(props.variant) {
+        case messageVariants.error:
+            return 'circle-x';
+
+        case messageVariants.info:
+            return 'info-circle';
+
+        case messageVariants.warning:
+            return 'alert-circle';
+
+        default:
+            return 'check-circle';
+    }
+});
+
+const classNames = computed(() => {
+    const classes = [
+        'fig-message',
+        `fig-message-${props.size}`,
+        `fig-message-${props.variant}`
+    ];
+
+    if(hasIcon.value) {
+        classes.push('align-bottom');
+    }
+
+    return classes;
+});
+
+const iconStrokeColor = computed(() => {
+    switch(props.variant) {
+        case messageVariants.error:
+            return '#73000c';
+
+        case messageVariants.info:
+            return '#044868';
+
+        case messageVariants.warning:
+            return '#6d5100';
+
+        default:
+            return '#224a23';
+    }
+});
+
+const iconWidth = computed(() => {
+    switch(props.size) {
+        case messageSizes.sm:
+            return 20;
+
+        default:
+            return 24;
+    }
+});
+
+function onCloseClick() {
+    isVisible.value = false;
+}
 </script>
 
 

@@ -1,30 +1,30 @@
 <script>
 export default {
-    name: 'IconLabel',
+    name: 'IconLabel'
+}
+</script>
 
-    props: {
-        classes: {}
-    },
+<script setup>
+import { computed, useSlots } from 'vue';
 
-    computed: {
-        defaultSlotClasses() {
-            if(this.classes) {
-                return this.classes;
-            }
-
-            const classNames = [];
-
-            if(this.$slots.left) {
-                classNames.push('pl-1');
-            }
-            if(this.$slots.right) {
-                classNames.push('pr-1');
-            }
-
-            return classNames;
-        }
+const props = defineProps({
+    classes: {
+        type: String
     }
-};
+});
+
+const slots = useSlots();
+
+const defaultSlotClasses = computed(() => {
+    if(props.classes) {
+        return props.classes;
+    }
+
+    return {
+        'pl-1': slots.left,
+        'pr-1': slots.right
+    }
+});
 </script>
 
 

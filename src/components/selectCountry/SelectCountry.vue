@@ -1,67 +1,62 @@
 <script>
+export default {
+    name: 'SelectCountry'
+}
+</script>
+
+<script setup>
+import { ref, onMounted, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import isObject from 'lodash.isobject';
-import FormSelect from '../form/select/FormSelect';
-import form_input_mixin from '../form/form_input_mixin';
-import { formSelectProps } from '../form/select/constants';
+import FormMultiSelect from '../form/multiselect/FormMultiSelect.vue';
 import useCountry from '../country/useCountry.js';
 
 const { getCountries } = useCountry();
 
-export default {
-    components: {
-        FormSelect
-    },
-
-    mixins: [
-        form_input_mixin
-    ],
-
-    props: {
-        ...formSelectProps
-    },
-
-    data: function() {
-        return {
-            selectedCountry: null,
-            selectOptions: [],
-        };
-    },
-
-    watch: {
-        value: {
-            handler(newVal) {
-                this.selectedCountry = newVal
-            },
-            immediate: true
-        }
-    },
-
-    methods: {
-        onChange(val) {
-            this.$emit('input', val);
-        }
-    },
-
-    created() {
-        const countries = getCountries();
-        const opts = [];
-        for(let countryCode in countries) {
-            opts.push({
-                label: this.$t(countries[countryCode]),
-                value: countryCode
-            })
-        }
-        this.selectOptions = opts;
+const props = defineProps({
+    modelValue: {
+        type: String
     }
-};
+});
+
+const emit = defineEmits([
+    'update:modelValue'
+]);
+
+const { t } = useI18n();
+const selectedCountry = ref(null);
+const selectOptions = ref([]);
+
+function onChange() {
+    emit('update:modelValue', selectedCountry.value);
+}
+
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        selectedCountry.value = newVal;
+    },
+    { immediate: true }
+);
+
+onMounted(() => {
+    const countries = getCountries();
+
+    selectOptions.value = Object.keys(countries).map((countryCode) => {
+        return {
+            label: t(countries[countryCode]),
+            value: countryCode
+        }
+    });
+});
 </script>
 
 
 <template>
-    <form-select
+    <form-multi-select
         v-model="selectedCountry"
+        @update:modelValue="onChange"
+        :searchable="true"
         :options="selectOptions"
-        @input="onChange"
-        :reduce="(obj) => obj.value"
-        v-bind="$props" />
+        mode="single" />
 </template>

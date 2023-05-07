@@ -1,74 +1,86 @@
 <script>
-import debounce from 'lodash.debounce';
-import FigButton from '../button/Button';
-import FigDropdown from '../dropdown/Dropdown';
-import FigDropdownButton from '../dropdown/DropdownButton';
-import { buttonSizes } from '../button/constants';
-
 export default {
-    components: {
-        FigButton,
-        FigDropdown,
-        FigDropdownButton
+    name: 'OperationsDropdown'
+}
+</script>
+
+<script setup>
+import { computed } from 'vue';
+import debounce from 'lodash.debounce';
+import FigButton from '../button/Button.vue';
+import FigDropdown from '../dropdown/Dropdown.vue';
+import FigDropdownButton from '../dropdown/DropdownButton.vue';
+import { buttonSizes } from '../button/constants.js';
+
+const props = defineProps({
+    showView: {
+        type: Boolean,
+        default: true
     },
 
-    props: {
-        showView: {
-            type: Boolean,
-            default: true
-        },
-
-        showEdit: {
-            type: Boolean,
-            default: true
-        },
-
-        showDelete: {
-            type: Boolean,
-            default: true
-        },
-
-        size: {
-            type: String,
-            default: buttonSizes.sm,
-            validator: (value) => Object.keys(buttonSizes).includes(value)
-        }
+    showEdit: {
+        type: Boolean,
+        default: true
     },
 
-    computed: {
-        canShow() {
-            return this.showView || this.showEdit || this.showDelete;
-        }
+    showDelete: {
+        type: Boolean,
+        default: true
     },
 
-    methods: {
-        onDelete: debounce(function() {
-            this.$emit('delete');
-        }, 200),
-
-        onEdit: debounce(function() {
-            this.$emit('edit');
-        }, 200),
-
-        onView: debounce(function() {
-            this.$emit('view');
-        }, 200)
+    size: {
+        type: String,
+        default: buttonSizes.sm,
+        validator: (value) => Object.keys(buttonSizes).includes(value)
     }
-};
+});
+
+const emit = defineEmits([
+    'selected',
+    'view',
+    'edit',
+    'delete'
+]);
+
+const canShow = computed(() => {
+    return props.showView || props.showEdit || props.showDelete;
+});
+
+const onSelected = debounce(function(value) {
+    emit('selected', value);
+
+    switch (value) {
+        case 'view':
+            emit('view');
+            break;
+
+        case 'edit':
+            emit('edit');
+            break;
+
+        case 'delete':
+            emit('delete');
+            break;
+    }
+})
 </script>
 
 <template>
-    <fig-dropdown placement="bottom" v-if="canShow">
-        <span v-slot:toggler="props">
+    <fig-dropdown
+        v-if="canShow"
+        placement="bottom"
+        @selected="onSelected">
+        <template v-slot:toggler="props">
             <fig-button
                 v-bind="props.ariaAttrs"
                 variant="plain"
                 :size="size"
                 icon="chevron-down" />
-        </span>
+        </template>
 
-        <fig-dropdown-button v-if="showView" @click="onView">{{ $t('View') }}</fig-dropdown-button>
-        <fig-dropdown-button v-if="showEdit" @click="onEdit">{{ $t('Edit') }}</fig-dropdown-button>
-        <fig-dropdown-button v-if="showDelete" @click="onDelete">{{ $t('Delete') }}</fig-dropdown-button>
+        <fig-dropdown-button v-if="showView" value='view'>{{ $t('View') }}</fig-dropdown-button>
+        <fig-dropdown-button v-if="showEdit" value='edit'>{{ $t('Edit') }}</fig-dropdown-button>
+        <fig-dropdown-button v-if="showDelete" value='delete'>{{ $t('Delete') }}</fig-dropdown-button>
+        <slot></slot>
     </fig-dropdown>
 </template>

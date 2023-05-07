@@ -1,37 +1,35 @@
 <script>
+export default {
+    name: 'FigHero'
+}
+</script>
+
+<script setup>
 import FigNuxtImgBunny from '../nuxtImgBunny/NuxtImgBunny.vue';
 
-export default {
-    name: 'FigHero',
-
-    components: {
-        FigNuxtImgBunny
+const props = defineProps({
+    url: {
+        type: String
     },
 
-    props: {
-        url: {
-            type: String
-        },
+    altText: {
+        type: String
+    },
 
-        altText: {
-            type: String
-        },
+    imageSizes: {
+        type: String
+    },
 
-        imageSizes: {
-            type: String
-        },
+    imageLoading: {
+        type: String,
+        default: 'eager'
+    },
 
-        imageLoading: {
-            type: String,
-            default: 'eager'
-        },
-
-        shadows: {
-            type: Boolean,
-            default: false
-        }
+    shadows: {
+        type: Boolean,
+        default: false
     }
-}
+});
 </script>
 
 

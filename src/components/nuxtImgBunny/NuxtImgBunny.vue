@@ -1,14 +1,9 @@
 <script>
 export default {
-    name: 'NuxtImgBunny',
-
-    inheritAttrs: false
-};
+    name: 'NuxtImgBunny'
+}
 </script>
 
-
 <template>
-    <nuxt-img
-        provider="bunny"
-        v-bind="$attrs" />
+    <nuxt-img provider="bunny" />
 </template>

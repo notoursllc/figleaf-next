@@ -1,45 +1,41 @@
 <script>
-import FigIcon from '../icon/FigIcon';
-import FigIconLabel from '../iconLabel/IconLabel';
-import { paymentTypes } from './constants';
-
-
 export default {
-    components: {
-        FigIcon,
-        FigIconLabel
-    },
+    name: 'PaymentTypeChooser'
+}
+</script>
 
-    props: {
-        value: {
-            type: String,
-            default: paymentTypes.cc,
-            validator: (value) => Object.keys(paymentTypes).includes(value)
-        }
-    },
+<script setup>
+import { ref, watch } from 'vue';
+import FigIcon from '../icon/FigIcon.vue';
+import FigIconLabel from '../iconLabel/IconLabel.vue';
+import { paymentTypes } from './constants.js';
 
-    data: function() {
-        return {
-            selectedType: paymentTypes.cc
-        };
-    },
-
-    watch: {
-        value: {
-            handler: function(newVal) {
-                this.selectedType = newVal;
-            },
-            immediate: true
-        }
-    },
-
-    methods: {
-        onClickType(type) {
-            this.selectedType = type;
-            this.$emit('input', this.selectedType);
-        }
+const props = defineProps({
+    modelValue: {
+        type: String,
+        default: paymentTypes.cc,
+        validator: (value) => Object.keys(paymentTypes).includes(value)
     }
-};
+});
+
+const emit = defineEmits([
+    'update:modelValue'
+]);
+
+const selectedType = ref(null);
+
+function onClickType(type) {
+    selectedType.value = type;
+    emit('update:modelValue', selectedType.value);
+}
+
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        selectedType.value = newVal;
+    },
+    { immediate: true }
+);
 </script>
 
 

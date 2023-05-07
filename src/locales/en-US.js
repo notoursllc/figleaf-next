@@ -36,6 +36,7 @@ export default {
     '{num} / page': '{num} / page',
     'New item': 'New item',
     'No': 'No',
+    'No results': 'No results',
     'not required': 'not required',
 
     'OK': 'OK',

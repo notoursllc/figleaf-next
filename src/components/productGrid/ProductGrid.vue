@@ -1,16 +1,19 @@
 <script>
 export default {
-    props: {
-        products: {
-            type: Array,
-            default: () => {
-                return [];
-            }
-        }
-    }
-};
+    name: 'ProductGrid'
+}
 </script>
 
+<script setup>
+const props = defineProps({
+    products: {
+        type: Array,
+        default: () => {
+            return [];
+        }
+    }
+});
+</script>
 
 <template>
     <div class="flex flex-wrap -mx-2 overflow-hidden xl:-mx-3">
