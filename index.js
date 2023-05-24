@@ -2,6 +2,7 @@ export { default as FigAddress } from './src/components/address/Address.vue';
 // export { default as FigAddressForm } from './src/components/addressForm/AddressForm.vue';
 
 export { default as FigBadge } from './src/components/badge/Badge.vue';
+export { default as FigBooleanTag } from './src/components/booleanTag/BooleanTag.vue';
 export { default as FigBunnyVideoPlayer } from './src/components/bunnyVideoPlayer/BunnyVideoPlayer.vue';
 export { default as FigButton } from './src/components/button/Button.vue';
 export { default as FigButtonFab } from './src/components/buttonFab/ButtonFab.vue';
@@ -86,7 +87,7 @@ export { default as FigPopoverContent } from './src/components/popover/PopoverCo
 export { default as FigPopConfirm } from './src/components/popConfirm/PopConfirm.vue';
 
 export { default as FigRequired } from './src/components/form/required/Required.vue';
-// export { default as FigRowBuilder } from './src/components/rowBuilder/RowBuilder.vue';
+export { default as FigRowBuilder } from './src/components/rowBuilder/RowBuilder.vue';
 
 // export { default as FigSignpost } from './src/components/signpost/Signpost.vue';
 // export { default as FigSlideover } from './src/components/slideover/Slideover.vue';
@@ -96,22 +97,18 @@ export { default as FigStockLevelWarning} from './src/components/stockLevelWarni
 // export { default as FigStripeForm } from './src/components/stripeForm/StripeForm.vue';
 export { default as FigSizeButtons } from './src/components/sizeButtons/SizeButtons.vue';
 export { default as FigSelectCountry } from './src/components/selectCountry/SelectCountry.vue';
-// export { default as FigSelectStateProvince } from './src/components/selectStateProvince/SelectStateProvince.vue';
+export { default as FigSelectStateProvince } from './src/components/selectStateProvince/SelectStateProvince.vue';
+
+export { default as FigTag } from './src/components/tag/Tag.vue';
 
 
-// export { default as FigTabPanel } from './src/components/tabView/TabPanel.vue';
-// export { default as FigTabView } from './src/components/tabView/TabView.vue';
-// export { default as FigTag } from './src/components/tag/Tag.vue';
-// export { default as FigBooleanTag } from './src/components/tag/BooleanTag.vue';
-
-// table
 // export { default as FigTableSimple } from './src/components/tableSimple/TableSimple.vue';
 // export { default as FigTd } from './src/components/tableSimple/Td.vue';
 // export { default as FigTh } from './src/components/tableSimple/Th.vue';
 // export { default as FigTr } from './src/components/tableSimple/Tr.vue';
 // export { default as FigTrNoResults } from './src/components/tableSimple/TrNoResults.vue';
 // export { default as FigTexasToast } from './src/components/texasToast/TexasToast.vue';
-// export { default as FigTextCard } from './src/components/textCard/TextCard.vue';
+export { default as FigTextCard } from './src/components/textCard/TextCard.vue';
 // export { default as FigTooltip } from './src/components/tooltip/Tooltip.vue';
 // export { default as FigTooltipDivider } from './src/components/tooltip/TooltipDivider.vue';
 

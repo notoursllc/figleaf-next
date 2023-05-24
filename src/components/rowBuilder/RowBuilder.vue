@@ -1,123 +1,77 @@
 <script>
-import draggable from 'vuedraggable';
+export default {
+    name: 'RowBuilder'
+}
+</script>
+
+<script setup>
+import { VueDraggableNext as draggable } from 'vue-draggable-next';
 import FigButton from '../button/Button.vue';
-import FigFormInput from '../form/text/FormText.vue';
 import FigPopConfirm from '../popConfirm/PopConfirm.vue';
 import FigIcon from '../icon/FigIcon.vue';
-import { rowBuilderDensity } from './constants.js'
+import { rowBuilderDensity } from './constants.js';
+import useRowBuilder from './useRowBuilder.js';
 
-export default {
-    name: 'RowBuilder',
-
-    components: {
-        draggable,
-        FigPopConfirm,
-        FigButton,
-        FigFormInput,
-        FigIcon
-    },
-
-    props: {
-        value: {
-            type: Array,
-            default: function() {
-                return [];
-            }
-        },
-
-        sortable: {
-            type: Boolean,
-            default: true
-        },
-
-        addable: {
-            type: Boolean,
-            default: true
-        },
-
-        removable: {
-            type: Boolean,
-            default: true
-        },
-
-        removeConfirm: {
-            type: Boolean,
-            default: true
-        },
-
-        maxRows: {
-            type: Number
-        },
-
-        density: {
-            type: String,
-            default: rowBuilderDensity.sm,
-            validator: (value) => Object.keys(rowBuilderDensity).includes(value)
-        },
-
-        addNewOnEmpty: {
-            type: Boolean,
-            default: false
+const props = defineProps({
+    modelValue: {
+        type: Array,
+        default: function() {
+            return [];
         }
     },
 
-    data: function() {
-        return {
-            rows: []
-        };
+    sortable: {
+        type: Boolean,
+        default: true
     },
 
-    computed: {
-        canSortRows() {
-            return this.sortable && this.rows.length > 1;
-        },
-
-        densityClass() {
-            return `fig-row-builder-row-${this.density}`;
-        },
-
-        canAddRow() {
-            if(!this.addable) {
-                return false;
-            }
-            const maxRows = parseInt(this.maxRows);
-            return isNaN(maxRows) || (maxRows > 0 && this.rows.length < maxRows);
-        }
+    addable: {
+        type: Boolean,
+        default: true
     },
 
-    watch: {
-        value: {
-            handler(newVal) {
-                this.rows = Array.isArray(newVal) ? newVal : [];
-
-                if(this.addNewOnEmpty && !this.rows.length) {
-                    this.addRow();
-                }
-            },
-            immediate: true
-        }
+    removable: {
+        type: Boolean,
+        default: true
     },
 
-    methods: {
-        addRow() {
-            this.$emit('add');
-        },
+    removeConfirm: {
+        type: Boolean,
+        default: true
+    },
 
-        removeRow(index) {
-            this.$emit('remove', index);
-        },
+    maxRows: {
+        type: Number
+    },
 
-        onSort() {
-            this.$emit('input', this.rows)
-        },
+    density: {
+        type: String,
+        default: rowBuilderDensity.sm,
+        validator: (value) => Object.keys(rowBuilderDensity).includes(value)
+    },
 
-        onPopoverToggleClick(index) {
-            if(!this.removeConfirm) {
-                this.removeRow(index);
-            }
-        }
+    addNewOnEmpty: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const emit = defineEmits([
+    'add',
+    'remove',
+    'update:modelValue'
+]);
+
+const {
+    rows,
+    canSortRows,
+    densityClass,
+    canAddRow,
+    onPopoverToggleClick,
+    addRow,
+    removeRow,
+    onSort
+} = useRowBuilder(props, emit);
 </script>
 
 
@@ -125,11 +79,10 @@ export default {
     <div>
         <div class="fig-row-builder">
             <draggable
-                v-model="rows"
+                :list="rows"
                 handle=".fig-row-builder-row-handle"
-                @update="onSort"
-                ghost-class="ghost"
-                tag="div">
+                @change="onSort"
+                ghost-class="ghost">
                 <div class="fig-row-builder-row" v-for="(obj, index) in rows" :key="index">
                     <div class="flex">
                         <!-- drag handle -->
@@ -190,17 +143,17 @@ export default {
     @apply flex flex-col flex-nowrap w-full;
 }
 
-.fig-row-builder .fig-row-builder-row-handle {
+.fig-row-builder-row-handle {
     @apply flex items-center w-6;
 }
 
-.fig-row-builder .fig-row-builder-row-sm {
+.fig-row-builder-row-sm {
     @apply py-1 pr-2;
 }
-.fig-row-builder .fig-row-builder-row-md {
+.fig-row-builder-row-md {
     @apply py-2 pr-3;
 }
-.fig-row-builder .fig-row-builder-row-lg {
+.fig-row-builder-row-lg {
     @apply py-3 pr-4;
 }
 </style>

@@ -1,51 +1,47 @@
 <script>
+export default {
+    name: 'Tag'
+}
+</script>
+
+<script setup>
+import { computed } from 'vue';
 import { tagVariants, tagSizes } from './constants';
 
-export default {
-    name: 'Tag',
-
-    props: {
-        tag: {
-            type: String,
-            default: 'span'
-        },
-
-        variant: {
-            type: String,
-            default: tagVariants.light,
-            validator: (value) => Object.keys(tagVariants).includes(value)
-        },
-
-        size: {
-            type: String,
-            default: tagSizes.lg,
-            validator: (value) => Object.keys(tagSizes).includes(value)
-        }
+const props = defineProps({
+    tag: {
+        type: String,
+        default: 'span'
     },
 
-    computed: {
-        classNames() {
-            return [
-                'fig-tag',
-                `fig-tag-${this.variant}`,
-                `fig-tag-size-${this.size}`
-            ];
-        }
+    variant: {
+        type: String,
+        default: tagVariants.light,
+        validator: (value) => Object.keys(tagVariants).includes(value)
     },
 
-    render(h) {
-        return h(
-            this.tag,
-            {
-                class: this.classNames,
-                on: this.$listeners,
-                attrs: this.$attrs
-            },
-            this.$slots.default
-        );
+    size: {
+        type: String,
+        default: tagSizes.lg,
+        validator: (value) => Object.keys(tagSizes).includes(value)
     }
-};
+});
+
+const classNames = computed(() => {
+    return {
+        'fig-tag': true,
+        [`fig-tag-${props.variant}`]: true,
+        [`fig-tag-size-${props.size}`]: true
+    };
+});
 </script>
+
+<template>
+    <component :is="tag" :class="classNames">
+        <slot></slot>
+    </component>
+</template>
+
 
 <style scoped>
 .fig-tag {

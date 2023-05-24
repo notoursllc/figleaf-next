@@ -47,10 +47,7 @@ const Template = (args, { argTypes }) => ({
                 <template v-slot:reference>
                     <fig-button>Click me</fig-button>
                 </template>
-
-                <fig-popover-content>
-                    Are you sure you want to do this?
-                </fig-popover-content>
+                Are you sure you want to do this?
             </fig-pop-confirm>
 
             <div class="mt-4">Action: {{ action }}</div>

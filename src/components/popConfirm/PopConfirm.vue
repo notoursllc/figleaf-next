@@ -9,6 +9,7 @@ import { ref, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FigButton from '../button/Button.vue';
 import FigPopover from '../popover/Popover.vue';
+import FigPopoverContent from '../popover/PopoverContent.vue';
 import { popoverProps } from '../popover/constants.js';
 
 const props = defineProps({
@@ -63,7 +64,9 @@ async function focusCancelButton(isVisible) {
             <slot name="reference"></slot>
         </template>
 
-        <slot></slot>
+        <fig-popover-content>
+            <slot></slot>
+        </fig-popover-content>
 
         <template v-slot:footer>
             <div

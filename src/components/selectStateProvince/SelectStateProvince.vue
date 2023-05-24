@@ -1,260 +1,116 @@
 <script>
-import isObject from 'lodash.isobject';
-import FormSelect from '../form/select/FormSelect';
-import FigFormText from '../form/text/FormText';
-import form_input_mixin from '../form/form_input_mixin';
-import { formSelectProps } from '../form/select/constants';
-
-// State values are ISO_3166-2 subdivision code, which is required by Stripe
-// https://en.wikipedia.org/wiki/ISO_3166-2
-// https://stripe.com/docs/api/orders_v2/create#create_order_v2-shipping_details-address-state
-
-const countryStatesMap = {
-    // United States
-    US: {
-        AL: 'Alabama',
-        AK: 'Alaska',
-        AZ: 'Arizona',
-        AR: 'Arkansas',
-        CA: 'California',
-        CO: 'Colorado',
-        CT: 'Connecticut',
-        DE: 'Delaware',
-        FL: 'Florida',
-        GA: 'Georgia',
-        HI: 'Hawaii',
-        ID: 'Idaho',
-        IL: 'Illinois',
-        IN: 'Indiana',
-        IA: 'Iowa',
-        KS: 'Kansas',
-        KY: 'Kentucky',
-        LA: 'Louisiana',
-        ME: 'Maine',
-        MD: 'Maryland',
-        MA: 'Massachusetts',
-        MI: 'Michigan',
-        MN: 'Minnesota',
-        MS: 'Mississippi',
-        MO: 'Missouri',
-        MT: 'Montana',
-        NE: 'Nebraska',
-        NV: 'Nevada',
-        NH: 'New Hampshire',
-        NJ: 'New Jersey',
-        NM: 'New Mexico',
-        NY: 'New York',
-        NC: 'North Carolina',
-        ND: 'North Dakota',
-        OH: 'Ohio',
-        OK: 'Oklahoma',
-        OR: 'Oregon',
-        PA: 'Pennsylvania',
-        RI: 'Rhode Island',
-        SC: 'South Carolina',
-        SD: 'South Dakota',
-        TN: 'Tennessee',
-        TX: 'Texas',
-        UT: 'Utah',
-        VT: 'Vermont',
-        VA: 'Virginia',
-        WA: 'Washington',
-        WV: 'West Virginia',
-        WI: 'Wisconsin',
-        WY: 'Wyoming'
-    },
-    // Canada
-    CA: {
-        AB: 'Alberta',
-        BC: 'British Columbia',
-        MB: 'Manitoba',
-        NB: 'New Brunswick',
-        NL: 'Newfoundland and Labrador',
-        NT: 'Northwest Territories',
-        NS: 'Nova Scotia',
-        NU: 'Nunavut',
-        ON: 'Ontario',
-        PE: 'Prince Edward Island',
-        QC: 'Quebec',
-        SK: 'Saskatchewan',
-        YT: 'Yukon'
-    },
-    // Australia
-    AU: {
-        ACT: 'Australian Capital Territory',
-        NSW: 'New South Wales',
-        NT: 'Northern Territory',
-        QLD: 'Queensland',
-        SA: 'South Australia',
-        TAS: 'Tasmania',
-        VIC: 'Victoria',
-        WA: 'Western Australia'
-    },
-    // Brazil
-    BR: {
-        AC: 'Acre',
-        AL: 'Alagoas',
-        AP: 'Amapá',
-        AM: 'Amazonas',
-        BA: 'Bahia',
-        CE: 'Ceará',
-        DF: 'Distrito Federal',
-        ES: 'Espírito Santo',
-        GO: 'Goiás',
-        MA: 'Maranhão',
-        MT: 'Mato Grasso',
-        MS: 'Mato Grosso do Sul',
-        MG: 'Minas Gerais',
-        PA: 'Pará',
-        PB: 'Paraíba',
-        PR: 'Paraná',
-        PE: 'Pernambuco',
-        PI: 'Piauí',
-        RJ: 'Rio de Janeiro',
-        RN: 'Rio Grande do Norte',
-        RS: 'Rio Grande do Sul',
-        RO: 'Rondônia',
-        RR: 'Roraima',
-        SC: 'Santa Catarina',
-        SP: 'São Paulo',
-        SE: 'Sergipe',
-        TO: 'Tocantins'
-    },
-    // Mexico
-    MX: {
-        AGS: 'Aguascalientes',
-        BC: 'Baja California',
-        BCS: 'Baja California Sur',
-        CAMP: 'Campeche',
-        CHIS: 'Chiapas',
-        CHIH: 'Chihuahua',
-        COAH: 'Coahuila',
-        COL: 'Colima',
-        DF: 'Distrito Federal',
-        DGO: 'Durango',
-        GTO: 'Guanajuato',
-        GRO: 'Guerrero',
-        HGO: 'Hidalgo',
-        JAL: 'Jalisco',
-        EDM: 'México',
-        MICH: 'Michoacán',
-        MOR: 'Morelos',
-        NAY: 'Nayarit',
-        NL: 'Nuevo León',
-        OAX: 'Oaxaca',
-        PUE: 'Puebla',
-        QRO: 'Querétaro',
-        QROO: 'Quintana Roo',
-        SLP: 'San Luis Potosi',
-        SIN: 'Sinaloa',
-        SON: 'Sonora',
-        TAB: 'Tabasco',
-        TAMPS: 'Tamaulipas',
-        TLAX: 'Tlaxcala',
-        VER: 'Veracruz',
-        YUC: 'Yucatán',
-        ZAC: 'Zacatecas'
-    }
-};
-
-
 export default {
-    components: {
-        FormSelect,
-        FigFormText
+    name: 'SelectStateProvince'
+}
+</script>
+
+<script setup>
+import { ref, computed, onMounted, watch } from 'vue';
+import isObject from 'lodash.isobject';
+import FormMultiSelect from '../form/multiselect/FormMultiSelect.vue';
+import FigFormText from '../form/text/FormText.vue';
+import useCountry from '../country/useCountry.js';
+import { formInputSizes } from '../form/inputConstants.js';
+
+const props = defineProps({
+    modelValue: {
+        type: String
     },
 
-    mixins: [
-        form_input_mixin
-    ],
-
-    props: {
-        ...formSelectProps,
-
-        value: {
-            type: String
-        },
-
-        country: String,
-        disabled: Boolean,
-        placeholder: String
+    country: {
+        type: String
     },
 
-    data() {
-        return {
-            selectedState: null
-        };
+    size: {
+        type: String,
+        default: formInputSizes.md,
+        validator: (value) => Object.keys(formInputSizes).includes(value)
     },
 
-    computed: {
-        stateOptions: function() {
-            const options = [];
-
-            if(this.country && countryStatesMap[this.country]) {
-                const states = countryStatesMap[this.country];
-
-                for(const key in states) {
-                    options.push(
-                        { label: states[key], value: key}
-                    );
-                }
-            }
-
-            return options;
-        }
+    disabled: {
+        type: Boolean,
+        default: false
     },
 
-    watch: {
-        value: {
-            handler(newVal) {
-                this.selectedState = newVal;
-            },
-            immediate: true
-        },
-
-        country: {
-            handler(newVal) {
-                if(this.selectedState && this.country && countryStatesMap[this.country]) {
-                    // if the current selected state does not exist in the map of
-                    // states for this country then set it to null
-                    if(!countryStatesMap[this.country][this.selectedState]) {
-                        this.selectedState = null;
-                    }
-                }
-                else {
-                    this.selectedState = null;
-                }
-
-                this.emitInput(this.selectedState);
-            },
-            immediate: true
-        }
-    },
-
-    methods: {
-        emitInput(val) {
-            this.$emit('input', isObject(val) ? val.value : val);
-        }
+    placeholder: {
+        type: String,
     }
-};
+});
+
+const emit = defineEmits([
+    'update:modelValue'
+]);
+
+const { getCountryStatesMap } = useCountry();
+const countryStatesMap = getCountryStatesMap();
+
+const selectedState = ref(null);
+
+const stateOptions = computed(() => {
+    let options = [];
+
+    if(props.country && countryStatesMap[props.country]) {
+        const states = countryStatesMap[props.country];
+
+        options = Object.keys(states).map((key) => {
+            return {
+                label: states[key],
+                value: key
+            }
+        });
+    }
+
+    return options;
+});
+
+function emitInput() {
+    emit('update:modelValue', selectedState.value);
+}
+
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        selectedState.value = newVal;
+    },
+    { immediate: true }
+);
+
+watch(
+    () => props.country,
+    (newVal) => {
+        if(selectedState.value && newVal && countryStatesMap[newVal]) {
+            // if the current selected state does not exist in the map of
+            // states for this country then set it to null
+            if(!countryStatesMap[newVal][selectedState.value]) {
+                selectedState.value = null;
+            }
+        }
+        else {
+            selectedState.value = null;
+        }
+
+        emitInput();
+    },
+    { immediate: true }
+);
 </script>
 
 
 <template>
     <div>
-        <form-select
+        <form-multi-select
             v-if="stateOptions.length"
             v-model="selectedState"
             v-bind="$props"
             :options="stateOptions"
-            @input="emitInput" />
+            @update:modelValue="emitInput" />
         <fig-form-text
             v-else
             v-model="selectedState"
-            @input="emitInput"
+            @update:modelValue="emitInput"
             :placeholder="placeholder"
             :disabled="disabled"
-            :size="this.size"
-            :state="this.state" />
+            :size="size"
+            class="w-full" />
     </div>
 </template>
