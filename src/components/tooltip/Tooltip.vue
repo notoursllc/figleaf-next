@@ -1,189 +1,175 @@
 <script>
-import { createPopper } from '@popperjs/core';
-import { tooltipPlacements, tooltipTriggers } from './constants';
-import { isString } from '../../utils/common.js';
-
-const triggerKeys = Object.keys(tooltipTriggers);
+import { tooltipTriggers } from './constants';
 
 export default {
-    name: 'Tooltip',
+    name: 'FigTooltip'
+}
 
-    props: {
-        placement: {
-            type: String,
-            default: tooltipPlacements['bottom-start'],
-            validator: (value) => Object.keys(tooltipPlacements).includes(value)
+export const triggerKeys = Object.keys(tooltipTriggers);
+</script>
+
+<script setup>
+import { ref, watch, computed, onBeforeUnmount, useSlots } from 'vue';
+import { createPopper } from '@popperjs/core';
+import isFunction from 'lodash.isfunction';
+import isString from 'lodash.isstring';
+import { tooltipPlacements } from './constants';
+
+const props = defineProps({
+    placement: {
+        type: String,
+        default: tooltipPlacements['bottom-start'],
+        validator: (value) => Object.keys(tooltipPlacements).includes(value)
+    },
+
+    triggers: {
+        type: [String, Array],
+        default: () => {
+            return triggerKeys;
         },
+        validator: (value) => {
+            if(isString(value)) {
+                return triggerKeys.includes(value);
+            }
 
-        triggers: {
-            type: [String, Array],
-            default: () => {
-                return triggerKeys;
-            },
-            validator: (value) => {
-                if(isString(value)) {
-                    return triggerKeys.includes(value);
+            return triggerKeys.some(key => value.includes(key));
+        }
+    },
+
+    disabled: {
+        type: Boolean,
+        default: false
+    },
+
+    centered: {
+        type: Boolean,
+        default: true
+    },
+
+    offset: {
+        type: Array,
+        default: () => [0, 8]
+    },
+
+    flip: {
+        type: Boolean,
+        default: true
+    },
+
+    customPopperOptions: {
+        type: Object,
+        default: null
+    },
+
+    target: {}
+});
+
+const slots = useSlots();
+
+const visible = ref(false);
+const arrow = ref(null);
+const tooltipRef = ref(null);
+const popperTarget = ref(null);
+
+let popper = null;
+
+const defaultPopperOptions = computed(() => {
+    return {
+        strategy: 'fixed',
+        placement: props.placement,
+        modifiers: [
+            {
+                name: 'offset',
+                options: {
+                    offset: props.offset
                 }
-
-                return triggerKeys.some(key => value.includes(key));
-            }
-        },
-
-        show: {
-            type: Boolean,
-            default: false
-        },
-
-        disabled: {
-            type: Boolean,
-            default: false
-        },
-
-        centered: {
-            type: Boolean,
-            default: true
-        },
-
-        offset: {
-            type: Array,
-            default: () => [0, 8]
-        },
-
-        flip: {
-            type: Boolean,
-            default: true
-        },
-
-        customPopperOptions: {
-            type: Object,
-            default: null
-        }
-
-        // target: {}
-    },
-
-    data() {
-        return {
-            visible: this.show
-        };
-    },
-
-    watch: {
-        show: {
-            handler(val) {
-                this.visible = val;
-            }
-        },
-
-        visible: {
-            handler (val) {
-                val ? this.createPopper() : this.removePopper();
             },
-            immediate: true
-        }
-    },
-
-    computed: {
-        defaultPopperOptions () {
-            return {
-                strategy: 'fixed',
-                placement: this.placement,
-                modifiers: [
-                    {
-                        name: 'offset',
-                        options: {
-                            offset: this.offset
-                        }
-                    },
-                    {
-                        name: 'flip',
-                        enabled: this.flip
-                    },
-                    {
-                        name: 'preventOverflow',
-                        options: {
-                            padding: 10
-                        }
-                    },
-                    {
-                        name: 'arrow',
-                        options: {
-                            enabled: true,
-                            element: this.$refs.arrow
-                        }
-                    }
-                ]
-            };
-        },
-
-        ariaAttrs () {
-            return {
-                'aria-expanded': this.visible ? 'true' : 'false',
-                'aria-haspopup': 'true'
-            };
-        }
-    },
-
-    methods: {
-        isValidTrigger(type) {
-            return Array.isArray(this.triggers) ? this.triggers.includes(type) : this.triggers === type;
-        },
-
-        checkHover(e) {
-            if (this.$scopedSlots.toggler && this.isValidTrigger(tooltipTriggers.hover)) {
-                this.toggle(e);
+            {
+                name: 'flip',
+                enabled: props.flip
+            },
+            {
+                name: 'preventOverflow',
+                options: {
+                    padding: 10
+                }
+            },
+            {
+                name: 'arrow',
+                options: {
+                    enabled: true,
+                    element: arrow.value
+                }
             }
-        },
+        ]
+    };
+});
 
-        checkClick(e) {
-            if (this.$scopedSlots.toggler && this.isValidTrigger(tooltipTriggers.click)) {
-                this.toggle(e);
-            }
-        },
+const ariaAttrs = computed(() => {
+    return {
+        'aria-expanded': visible.value,
+        'aria-haspopup': 'true'
+    };
+});
 
-        hide() {
-            this.visible = false;
-        },
-
-        toggle(e) {
-            e.preventDefault();
-
-            if(this.visible) {
-                this.visible = false;
-            }
-            else {
-                this.visible = true;
-            }
-        },
-
-        removePopper() {
-            if (this._popper) {
-                this._popper.destroy();
-            }
-            this._popper = null;
-        },
-
-        createPopper() {
-            this.removePopper();
-
-            if (this.disabled) {
-                this.visible = false;
-                return;
-            };
-
-            const targetEl = this.$el.firstChild;
-            // if(this.target) {
-            //     targetEl = this.target.$el || this.target;
-            // }
-
-            this._popper = createPopper(
-                targetEl,
-                this.$refs.tooltipRef,
-                this.customPopperOptions || this.defaultPopperOptions
-            );
-        }
+const propTarget = computed(() => {
+    if (isFunction(props.target)) {
+        const t = props.target();
+        return t.value || t;
     }
-};
+
+    return props.target?.value || props.target;
+});
+
+function removePopper() {
+    popper?.destroy();
+    popper = null;
+}
+
+function buildPopper() {
+    removePopper();
+
+    if (props.disabled) {
+        visible.value = false;
+        return;
+    }
+
+    popper = createPopper(
+        propTarget.value || popperTarget.value,
+        tooltipRef.value,
+        props.customPopperOptions || defaultPopperOptions.value
+    );
+}
+
+function setDisplay(isVisible) {
+    return isVisible ? buildPopper() : removePopper();
+}
+
+function toggle(e) {
+    e?.preventDefault();
+
+    visible.value = (e?.type === 'mouseenter' || e?.type === 'focusin');
+    setDisplay(visible.value);
+}
+
+function checkHover(e) {
+    if (slots && (isFunction(slots.toggler) && slots.toggler())) {
+        toggle(e);
+    }
+}
+
+watch(
+    () => props.target,
+    () => {
+        propTarget.value?.addEventListener('mouseenter', toggle, false);
+        propTarget.value?.addEventListener('mouseleave', toggle, false);
+    }
+)
+
+onBeforeUnmount(() => {
+    propTarget.value?.removeEventListener('mouseenter', toggle);
+    propTarget.value?.removeEventListener('mouseleave', toggle);
+});
 </script>
 
 
@@ -191,16 +177,18 @@ export default {
     <div
         class="relative inline-flex"
         @mouseenter="checkHover($event)"
-        @mouseleave="checkHover($event)"
-        @click="checkClick($event)">
-        <div class="leading-none"><slot name="toggler" :aria-attrs="ariaAttrs"></slot></div>
-        <div
-            ref="tooltipRef"
-            :class="{'hidden': !visible, 'block': visible, 'text-center': centered, 'text-left': !centered}"
-            class="fig-tip">
-            <div ref="arrow" class="arrow"></div>
-            <slot></slot>
-        </div>
+        @mouseleave="checkHover($event)">
+        <div ref="popperTarget" class="leading-none"><slot name="toggler" :aria-attrs="ariaAttrs"></slot></div>
+        <transition name="fade">
+            <div
+                v-show="visible"
+                ref="tooltipRef"
+                :class="{'invisible': !visible, 'block': visible, 'text-center': centered, 'text-left': !centered}"
+                class="fig-tip">
+                <div ref="arrow" class="arrow"></div>
+                <slot></slot>
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -208,37 +196,37 @@ export default {
 <style scoped>
 .fig-tip {
     @apply bg-gray-800 text-white absolute top-0 left-0 py-1 px-2 z-50 font-normal leading-normal text-sm max-w-xs break-words rounded-sm;
-    min-width: 100px;
+    min-width: 25px;
 }
 
 /* https://popper.js.org/docs/v2/tutorial/#arrow */
 .arrow,
 .arrow::before {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  z-index: -1;
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    z-index: -1;
 }
 
 .arrow::before {
-  content: '';
-  transform: rotate(45deg);
-  @apply bg-gray-800;
+    content: '';
+    transform: rotate(45deg);
+    @apply bg-gray-800;
 }
 
 [data-popper-placement^='top'] > .arrow {
-  bottom: -4px;
+    bottom: -4px;
 }
 
 [data-popper-placement^='bottom'] > .arrow {
-  top: -4px;
+    top: -4px;
 }
 
 [data-popper-placement^='left'] > .arrow {
-  right: 0px;
+    right: -4px;
 }
 
 [data-popper-placement^='right'] > .arrow {
-  left: -8px;
+    left: -4px;
 }
 </style>
