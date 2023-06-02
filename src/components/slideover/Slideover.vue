@@ -1,31 +1,33 @@
 <script>
+export default {
+    name: 'FigSlideover'
+}
+</script>
+
+<script setup>
+import { useSlots } from 'vue';
 import FigButton from '../button/Button.vue';
 import FigIcon from '../icon/FigIcon.vue';
 
-export default {
-    components: {
-        FigButton,
-        FigIcon
+const props = defineProps({
+    opened: {
+        type: Boolean,
+        default: false
     },
 
-    props: {
-        opened: {
-            type: Boolean,
-            default: false
-        },
-
-        closable: {
-            type: Boolean,
-            default: true
-        }
-    },
-
-    methods: {
-        onClose() {
-            this.$emit('close');
-        }
+    closable: {
+        type: Boolean,
+        default: true
     }
-};
+});
+
+const emit = defineEmits(['close']);
+
+const slots = useSlots();
+
+function onClose() {
+    emit('close');
+}
 </script>
 
 <template>
@@ -49,7 +51,7 @@ export default {
             </div>
 
             <!-- footer -->
-            <div v-if="$slots.footer" class="flex items-center w-full">
+            <div v-if="slots.footer" class="flex items-center w-full">
                 <slot name="footer" />
             </div>
         </aside>
