@@ -27,7 +27,7 @@ export { default as FigFormGroup } from './src/components/form/group/FormGroup.v
 export { default as FigFormText } from './src/components/form/text/FormText.vue';
 export { default as FigFormInputDate } from './src/components/form/date/FormInputDate.vue';
 export { default as FigFormInputEndcapper } from './src/components/form/endcapper/FormInputEndcapper.vue';
-// export { default as FigFormInputFileButton } from './src/components/form/FormInputFileButton.vue';
+export { default as FigFormInputFileButton } from './src/components/form/fileButton/FormInputFileButton.vue';
 export { default as FigFormInputMoney } from './src/components/form/money/FormInputMoney.vue';
 export { default as FigFormMultiSelect } from './src/components/form/multiSelect/FormMultiSelect.vue';
 export { default as FigFormInputNumber } from './src/components/form/number/FormInputNumber.vue';
@@ -42,7 +42,7 @@ export { default as FigFormTextarea } from './src/components/form/textarea/FormT
 export { default as FigHeader } from './src/components/header/Header.vue';
 export { default as FigHero } from './src/components/hero/Hero.vue';
 
-// hero slider
+// hero slider - TODO: still need upgrading to vue 3
 // export { default as FigHeroSlider } from './src/components/heroSlider/HeroSlider.vue';
 // export { default as FigHeroSliderItem } from './src/components/heroSlider/HeroSliderItem.vue';
 

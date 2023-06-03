@@ -326,6 +326,10 @@
   <circle cx="7" cy="17" r="2"/>
   <circle cx="17" cy="17" r="2"/>
   <path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5"/>
+</symbol><symbol id="upload" viewBox="0 0 24 24" class="fig-svg-icon fig-svg-icon-upload">
+    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"/>
+    <path d="M7 9l5 -5l5 5"/>
+    <path d="M12 4l0 12"/>
 </symbol><symbol id="urgent" viewBox="0 0 24 24" class="fig-svg-icon fig-svg-icon-urgent">
   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
   <path d="M8 16v-4a4 4 0 0 1 8 0v4"/>
