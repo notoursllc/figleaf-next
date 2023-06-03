@@ -20,6 +20,7 @@
     "date-fns-tz": "2.0.0",
     "flatpickr": "4.6.13",
     "focus-trap": "7.4.0",
+    "get-youtube-id": "1.0.1",
     "lodash.clonedeep": "4.5.0",
     "lodash.debounce": "4.0.8",
     "lodash.isdate": "4.0.1",
@@ -36,7 +37,8 @@
     "vue-i18n": "9.2.2",
     "vue-router": "^4.1.6",
     "vue3-click-away": "1.2.4",
-    "vuelidate": "0.7.7"
+    "vuelidate": "0.7.7",
+    "youtube-player": "5.6.0"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "6.5.10",

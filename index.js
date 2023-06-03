@@ -110,7 +110,7 @@ export { default as FigTooltip } from './src/components/tooltip/Tooltip.vue';
 
 export { default as FigVNodes } from './src/components/vNodes/VNodes.vue';
 
-// export { default as FigYouTube } from './src/components/youtube/Youtube.vue';
+export { default as FigYouTube } from './src/components/youtube/Youtube.vue';
 
 // directives
 // export { default as FigResizeObserverDirective } from './src/directives/resizeObserver/resizeObserver.js';
