@@ -31,7 +31,7 @@ export { default as FigFormInputFileButton } from './src/components/form/fileBut
 export { default as FigFormInputMoney } from './src/components/form/money/FormInputMoney.vue';
 export { default as FigFormMultiSelect } from './src/components/form/multiSelect/FormMultiSelect.vue';
 export { default as FigFormInputNumber } from './src/components/form/number/FormInputNumber.vue';
-// export { default as FigFormInputToggle } from './src/components/form/FormInputToggle.vue';
+export { default as FigFormInputToggle } from './src/components/form/toggle/FormInputToggle.vue';
 export { default as FigFormRadio } from './src/components/form/radio/FormRadio.vue';
 // export { default as FigFormSelect } from './src/components/form/select/FormSelect.vue';
 export { default as FigFormSelectBitwise } from './src/components/form/selectBitwise/FormSelectBitwise.vue';
