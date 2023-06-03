@@ -1,13 +1,24 @@
 <script>
 export default {
-    name: 'FigTr',
-};
+    name: 'FigTr'
+}
+</script>
+
+<script setup>
 </script>
 
 
 <template>
-    <tr>
+    <tr class="fig-tr">
         <slot></slot>
     </tr>
 </template>
+
+
+<style scoped>
+.fig-tr {
+    @apply relative;
+}
+</style>
+
 

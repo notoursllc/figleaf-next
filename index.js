@@ -99,11 +99,11 @@ export { default as FigSelectCountry } from './src/components/selectCountry/Sele
 export { default as FigSelectStateProvince } from './src/components/selectStateProvince/SelectStateProvince.vue';
 
 export { default as FigTag } from './src/components/tag/Tag.vue';
-// export { default as FigTableSimple } from './src/components/tableSimple/TableSimple.vue';
-// export { default as FigTd } from './src/components/tableSimple/Td.vue';
-// export { default as FigTh } from './src/components/tableSimple/Th.vue';
-// export { default as FigTr } from './src/components/tableSimple/Tr.vue';
-// export { default as FigTrNoResults } from './src/components/tableSimple/TrNoResults.vue';
+export { default as FigTableSimple } from './src/components/tableSimple/TableSimple.vue';
+export { default as FigTd } from './src/components/tableSimple/Td.vue';
+export { default as FigTh } from './src/components/tableSimple/Th.vue';
+export { default as FigTr } from './src/components/tableSimple/Tr.vue';
+export { default as FigTrNoResults } from './src/components/tableSimple/TrNoResults.vue';
 // export { default as FigTexasToast } from './src/components/texasToast/TexasToast.vue';
 export { default as FigTextCard } from './src/components/textCard/TextCard.vue';
 export { default as FigTooltip } from './src/components/tooltip/Tooltip.vue';

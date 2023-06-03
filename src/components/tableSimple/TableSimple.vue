@@ -1,99 +1,117 @@
 <script>
 export default {
-    name: 'SimpleTable',
+    name: 'FigTableSimple',
+    inheritAttrs: false,
+}
+</script>
 
-    props: {
-        striped: {
-            type: Boolean,
-            default: false
-        },
+<script setup>
+import { computed, reactive, provide, watch } from 'vue';
+import { tableSimplePaddingOptions } from './constants.js';
 
-        hover: {
-            type: Boolean,
-            default: false
-        },
+const props = defineProps({
+    striped: {
+        type: Boolean,
+        default: false
+    },
 
-        bordered: {
-            type: Boolean,
-            default: false
-        },
+    hover: {
+        type: Boolean,
+        default: false
+    },
 
-        shadow: {
-            type: Boolean,
-            default: false
-        },
+    bordered: {
+        type: Boolean,
+        default: false
+    },
 
-        cellPadding: {
-            type: Number,
-            default: 2
+    shadow: {
+        type: Boolean,
+        default: false
+    },
+
+    full: {
+        type: Boolean,
+        default: false
+    },
+
+    cellPadding: {
+        type: Number,
+        default: 2,
+        validator: (value) => {
+            return tableSimplePaddingOptions.includes(value);
         }
     },
 
-    data() {
-        return {
-            sharedState: {
-                striped: this.striped,
-                bordered: this.bordered,
-                cellPadding: this.cellPadding,
-                sort: {
-                    by: null,
-                    isAsc: false
-                }
-            }
-        };
+    defaultSortBy: {
+        type: String
     },
 
-    provide() {
-        return {
-            tableState: this.sharedState
-        };
-    },
-
-    watch: {
-        'sharedState.sort': {
-            handler(newVal) {
-                this.emitSort();
-            },
-            deep: true
-        }
-    },
-
-    computed: {
-        tableClasses() {
-            const classes = [];
-
-            if(this.striped) {
-                classes.push('fig-table-striped');
-            }
-
-            if(this.hover) {
-                classes.push('fig-table-hover');
-            }
-
-            return classes;
-        }
-    },
-
-    methods: {
-        emitSort() {
-            this.$emit('sort', `${this.sharedState.sort.by}:${this.sharedState.sort.isAsc ? 'asc' : 'desc'}`);
-        }
+    defaultSortAsc: {
+        type: Boolean,
+        default: false
     }
-};
+});
+
+const emit = defineEmits([
+    'sort'
+]);
+
+const sharedState = reactive({
+    sort: {
+        by: props.defaultSortBy || '',
+        isAsc: props.defaultSortAsc
+    },
+    ...props
+});
+
+provide('tableState', {...sharedState});
+
+const tableClasses = computed(() => {
+    return {
+        'fig-table': true,
+        'fig-table-striped': props.striped,
+        'fig-table-hover': props.hover,
+    }
+});
+
+function emitSort() {
+    emit('sort', {
+        by: sharedState.sort.by,
+        isAsc: sharedState.sort.isAsc
+    })
+}
+
+watch(
+    () => sharedState.sort,
+    emitSort,
+    { deep: true }
+);
 </script>
 
 
 <template>
-    <div class="-my-2 p-1 overflow-x-auto">
-        <div class="align-middle inline-block min-w-full overflow-hidden bg-white shadow-dashboard">
-            <table
-                class="fig-table"
-                :class="tableClasses">
-                <thead>
+    <div
+        class="p-1 overflow-x-auto px-1 pb-1 align-middle inine-block"
+        :class="{'min-w-full': props.full}">
+
+        <div v-if="$slots.tools" class="mb-2 px-2">
+            <slot name="tools"></slot>
+        </div>
+
+        <div class="overflow-hidden shadow-dashboard">
+            <table :class="tableClasses" v-bind="$attrs">
+                <thead class="bg-gray-100">
                     <slot name="head"></slot>
                 </thead>
 
-                <slot></slot>
+                <tbody>
+                    <slot></slot>
+                </tbody>
+
+                <!-- tables can have multiple tbody elements, and other elements like tfoot
+                so this slot allows for those options -->
+                <slot name="belowTbody"></slot>
             </table>
         </div>
     </div>
@@ -102,7 +120,7 @@ export default {
 
 <style scoped>
 .fig-table {
-    @apply min-w-full border border-gray-300;
+    @apply border border-gray-300 text-gray-900 border-collapse bg-white;
 }
 
 .fig-table > tbody {

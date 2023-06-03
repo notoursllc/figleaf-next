@@ -1,115 +1,91 @@
 <script>
-import FigIcon from '../icon/FigIcon';
-
-const uid = Date.now().toString(36) + Math.random().toString(36).substr(2);
-
 export default {
-    name: 'FigTh',
+    name: 'FigTh'
+}
+</script>
 
-    components: {
-        FigIcon
-    },
+<script setup>
+import { inject, computed } from 'vue';
+import FigIcon from '../icon/FigIcon.vue';
+import debounce from 'lodash/debounce';
 
-    props: {
-        prop: {
-            type: String,
-            default: uid
-        },
-
-        sortable: {
-            type: Boolean,
-            default: false
-        },
-
-        right: {
-            type: Boolean
-        }
-    },
-
-    inject: [
-        'tableState'
-    ],
-
-    computed: {
-        isActive() {
-            return this.tableState.sort.by === this.prop;
-        },
-
-        classNames() {
-            const classes = [];
-
-            if(this.tableState.bordered) {
-                classes.push(
-                    'border',
-                    'border-gray-600'
-                );
-            }
-
-            return classes;
-        },
-
-        containerClasses() {
-            const classes = ['p-2', 'flex', 'items-center', 'relative'];
-
-            if(this.sortable) {
-                classes.push(
-                    'cursor-pointer',
-                    'pr-7'
-                );
-            }
-
-            if(this.isActive) {
-                classes.push(
-                    'bg-gray-200',
-                    'text-violet-800',
-                    'border-violet-600',
-                    'transition-transform',
-                    'duration-500',
-                    this.tableState.sort.isAsc ? 'border-t-2' : 'border-b-2'
-                );
-            }
-            else {
-                classes.push(
-                    'text-gray-500'
-                );
-            }
-
-            return classes;
-        },
-
-        arrowClasses() {
-            const classes = [];
-
-            if(this.isActive && !this.tableState.sort.isAsc) {
-                classes.push(
-                    'fig-table-th-arrow-down'
-                );
-            }
-
-            return classes;
-        },
-
-        labelClasses() {
-            const classes = ['grow'];
-
-            if(this.right) {
-                classes.push('text-right');
-            }
-
-            return classes;
-        }
-    },
-
-    methods: {
-        onClick(e) {
-            if(this.sortable) {
-                const isAsc = this.tableState.sort.by === this.prop ? !this.tableState.sort.isAsc : false;
-                this.tableState.sort.by = this.prop;
-                this.tableState.sort.isAsc = isAsc;
-            }
-        }
+const props = defineProps({
+    sort: {
+        type: String,
+        default: null
     }
-};
+});
+
+const emit = defineEmits(['sort']);
+const tableState = inject('tableState');
+
+function emitSort() {
+    emit('sort', {
+        by: tableState.sort.by,
+        isAsc: tableState.sort.isAsc
+    });
+}
+
+const isSelected = computed(() => {
+    return props.sort && tableState.sort.by === props.sort;
+});
+
+const classNames = computed(() => {
+    return {
+        'fig-table-th-sortable': props.sort,
+        'fig-table-th-sort-active': props.sort && isSelected.value,
+        'fig-table-th-sort-asc': props.sort && isSelected.value && tableState.sort.isAsc,
+        'fig-table-th-sort-desc': props.sort && isSelected.value && !tableState.sort.isAsc
+    }
+});
+
+const contentClasses = computed(() => {
+    return {
+        'px-1': tableState.cellPadding === 1,
+        'px-2': tableState.cellPadding === 2,
+        'px-3': tableState.cellPadding === 3,
+        'px-4': tableState.cellPadding === 4,
+        'px-5': tableState.cellPadding === 5,
+        'py-1': tableState.cellPadding === 1,
+        'py-2': tableState.cellPadding === 2,
+        'py-3': tableState.cellPadding === 3,
+        'py-4': tableState.cellPadding === 4,
+        'py-5': tableState.cellPadding === 5,
+        'flex': true,
+        'items-center': true
+    }
+});
+
+const arrowIcon = computed(() => {
+    if (props.sort) {
+        return isSelected.value ? 'chevron-up' : 'chevron-down'
+    }
+    return null;
+});
+
+const arrowClasses = computed(() => {
+    const selected = props.sort && isSelected.value;
+
+    return {
+        'transition-transform duration-500': selected,
+        'fig-table-th-arrow-down': selected && !tableState.sort.isAsc
+    }
+});
+
+const onClick = debounce(
+    () => {
+        if(props.sort) {
+            tableState.sort.isAsc = isSelected.value ? !tableState.sort.isAsc : tableState.defaultSortAsc;
+            tableState.sort.by = props.sort;
+            emitSort()
+        }
+    },
+    500,
+    {
+        leading: true,
+        trailing: false
+    }
+);
 </script>
 
 
@@ -117,21 +93,17 @@ export default {
     <th
         class="fig-table-th"
         :class="classNames"
-        v-bind="$attrs">
-        <div :class="containerClasses">
-            <div :class="labelClasses"><slot></slot></div>
-            <div
-                v-if="sortable"
-                @click="onClick"
-                class="fig-table-th-arrow"
-                :class="arrowClasses">
+        @click="onClick">
+        <div :class="contentClasses">
+            <div class="flex-grow"><slot></slot></div>
+            <div v-if="arrowIcon" class="ml-1">
                 <fig-icon
-                    class="block"
-                    icon="chevron-up"
-                    :stroke-width="2"
-                    stroke="#737373"
-                    :width="16"
-                    :height="16" />
+                    :class="arrowClasses"
+                    :icon="arrowIcon"
+                    :stroke-width="1.5"
+                    stroke-color="#000"
+                    :width="18"
+                    :height="18" />
             </div>
         </div>
     </th>
@@ -140,13 +112,33 @@ export default {
 
 <style scoped>
 .fig-table-th {
-    @apply transition-colors relative font-normal text-gray-600 bg-gray-100 text-sm text-left border-r border-b border-gray-300;
+    @apply border border-gray-300 text-sm text-gray-800 font-medium;
+    transition: background-color .5s ease;
 }
-.fig-table-th .fig-table-th-arrow {
-    @apply absolute transition-transform duration-500 mt-1;
-    right: 8px;
+
+.fig-table-th-sortable {
+    @apply cursor-pointer;
 }
-.fig-table-th .fig-table-th-arrow-down {
-    transform: rotateZ(180deg)
+.fig-table-th-sortable:hover {
+    @apply bg-blue-100;
+}
+
+.fig-table-th-arrow-down {
+    transform: rotateZ(180deg);
+}
+
+.fig-table-th-sort-active {
+    @apply text-blue-700 bg-blue-100 transition-transform duration-1000;
+    transition: background-color .5s ease;
+}
+.fig-table-th-sort-active:hover {
+    @apply bg-blue-200;
+}
+
+.fig-table-th-sort-asc {
+    border-top: 1px solid #3182ce;
+}
+.fig-table-th-sort-desc {
+    border-bottom: 1px solid #3182ce;
 }
 </style>

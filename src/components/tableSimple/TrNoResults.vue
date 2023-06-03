@@ -1,14 +1,16 @@
 <script>
 export default {
-    name: 'TrNoResults',
+    name: 'FigTrNoResults'
+}
+</script>
 
-    props: {
-        colspan: {
-            type: [String, Number],
-            default: 1
-        }
+<script setup>
+const props = defineProps({
+    colspan: {
+        type: [String, Number],
+        default: 1
     }
-};
+});
 </script>
 
 
@@ -16,7 +18,6 @@ export default {
     <tr>
         <td
             :colspan="colspan"
-            class="text-center text-gray-500 px-6 py-1"
-            v-bind="$attrs"><slot>{{ $t('No data') }}</slot></td>
+            class="text-center text-gray-500 px-6 py-1"><slot>{{ $t('No data') }}</slot></td>
     </tr>
 </template>

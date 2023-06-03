@@ -1,44 +1,28 @@
 <script>
 export default {
-    name: 'FigTd',
-
-    inject: [
-        'tableState'
-    ],
-
-    computed: {
-        classNames() {
-            const classes = [];
-
-            if(this.tableState.striped) {
-                classes.push(
-                    'border-b',
-                    'border-gray-300'
-                );
-            }
-
-            if(this.tableState.bordered) {
-                classes.push(
-                    'border',
-                    'border-gray-300'
-                );
-            }
-
-            classes.push(
-                `p-${this.tableState.cellPadding}`
-            );
-
-            return classes;
-        }
-    }
-};
+    name: 'FigTd'
+}
 </script>
 
+<script setup>
+import { inject, computed } from 'vue';
+
+const tableState = inject('tableState');
+
+const classNames = computed(() => {
+    return {
+        'border-b': tableState.striped,
+        'border-gray-300': tableState.striped,
+        'border': tableState.bordered,
+        'border-gray-300': tableState.bordered,
+        [`p-${tableState.cellPadding}`]: true
+    }
+});
+</script>
 
 <template>
     <td
         class="fig-td transition-colors"
-        :class="classNames"
-        v-bind="$attrs"><slot></slot></td>
+        :class="classNames"><slot></slot></td>
 </template>
 
