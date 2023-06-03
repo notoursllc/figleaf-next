@@ -17,7 +17,6 @@ export { default as FigCurrency } from './src/components/currency/Currency.vue';
 export { default as FigCurrencySymbol } from './src/components/currencySymbol/CurrencySymbol.vue';
 
 export { default as FigDivider } from './src/components/divider/Divider.vue';
-// export { default as FigDataToggler } from './src/components/dataToggler/DataToggler.vue';
 export { default as FigDropdown } from './src/components/dropdown/Dropdown.vue';
 export { default as FigDropdownButton } from './src/components/dropdown/DropdownButton.vue';
 export { default as FigDropdownDivider } from './src/components/dropdown/DropdownDivider.vue';
