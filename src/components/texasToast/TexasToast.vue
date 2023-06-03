@@ -1,113 +1,109 @@
 <script>
-import Vue from 'vue';
-import VueHotkey from 'v-hotkey';
-import vClickOutside from 'v-click-outside';
-import FigButton from '../button/Button';
-import FigIcon from '../icon/FigIcon';
-import { texasToastVariants } from './constants';
-
-Vue.use(VueHotkey);
+import { directive } from 'vue3-click-away';
 
 export default {
-    name: 'TexasToast',
+    name: 'FigTexasToast',
 
     directives: {
-        clickOutside: vClickOutside.directive
-    },
-
-    components: {
-        FigButton,
-        FigIcon
-    },
-
-    props: {
-        variant: {
-            type: String,
-            default: texasToastVariants.success,
-            validator: (value) => Object.keys(texasToastVariants).includes(value)
-        }
-    },
-
-    data() {
-        return {
-            visible: false,
-            timeoutId: null
-        };
-    },
-
-    computed: {
-        theme() {
-            const themeData = {
-                icon: null,
-                stroke: null,
-                primaryButtonClass: null
-            };
-
-            switch(this.variant) {
-                case texasToastVariants.success:
-                    themeData.icon = 'check-circle';
-                    themeData.stroke = '#48bb78';
-                    themeData.primaryButtonClass = 'bg-emerald-100 hover:bg-emerald-200 text-emerald-900';
-                    break;
-
-                case texasToastVariants.danger:
-                    themeData.icon = 'alert-circle';
-                    themeData.stroke = '#dc2626';
-                    themeData.primaryButtonClass = 'bg-red-100 hover:bg-red-200 text-red-800';
-                    break;
-
-                case texasToastVariants.info:
-                    themeData.icon = 'info-circle';
-                    themeData.stroke = '#2563eb';
-                    themeData.primaryButtonClass = 'bg-blue-100 hover:bg-blue-200 text-blue-900';
-                    break;
-            }
-
-            return themeData;
-        }
-    },
-
-    methods: {
-        show(timeout) {
-            document.body.style.overflow = 'hidden'; // prevent body from scrolling too (double scroll bars)
-            this.visible = true;
-
-            if(timeout) {
-                this.timeoutId = setTimeout(() => {
-                    // the toast may have been hidden by the user manually
-                    // before the timer expires, so checking if it's still
-                    // visible before calling hide() so the 'hide' event
-                    // does not fire again unnecessarily
-                    if(this.visible) {
-                        this.hide();
-                    }
-                }, timeout);
-            }
-        },
-
-        hide(buttonIndex) {
-            document.body.style.overflow = '';
-            this.visible = false;
-            this.$emit('hide', buttonIndex === undefined ? null : buttonIndex);
-            this.removeTimeout();
-        },
-
-        onHotkey(e) {
-            this.hide();
-        },
-
-        removeTimeout() {
-            if(this.timeoutId) {
-                clearTimeout(this.timeoutId);
-                this.timeoutId = null;
-            }
-        }
-    },
-
-    beforeDestroy () {
-        this.removeTimeout();
+        clickOutside: directive
     }
-};
+}
+</script>
+
+<script setup>
+import { ref, computed, onUnmounted, onMounted } from 'vue';
+import { onKeyStroke } from '@vueuse/core';
+import FigButton from '../button/Button.vue';
+import FigIcon from '../icon/FigIcon.vue';
+import { texasToastVariants } from './constants.js';
+
+const props = defineProps({
+    variant: {
+        type: String,
+        default: texasToastVariants.success,
+        validator: (value) => Object.keys(texasToastVariants).includes(value)
+    }
+});
+
+const emit = defineEmits(['hide']);
+
+defineExpose({
+    show,
+    hide
+});
+
+const visible = ref(false);
+const timeoutId = ref(null);
+
+const theme = computed(() => {
+    const themeData = {
+        icon: null,
+        stroke: null,
+        primaryButtonClass: null
+    };
+
+    switch(props.variant) {
+        case texasToastVariants.success:
+            themeData.icon = 'check-circle';
+            themeData.stroke = '#48bb78';
+            themeData.primaryButtonClass = 'bg-emerald-100 hover:bg-emerald-200 text-emerald-900';
+            break;
+
+        case texasToastVariants.danger:
+            themeData.icon = 'alert-circle';
+            themeData.stroke = '#dc2626';
+            themeData.primaryButtonClass = 'bg-red-100 hover:bg-red-200 text-red-800';
+            break;
+
+        case texasToastVariants.info:
+            themeData.icon = 'info-circle';
+            themeData.stroke = '#2563eb';
+            themeData.primaryButtonClass = 'bg-blue-100 hover:bg-blue-200 text-blue-900';
+            break;
+    }
+
+    return themeData;
+});
+
+function show(timeout) {
+    document.body.style.overflow = 'hidden'; // prevent body from scrolling too (double scroll bars)
+    visible.value = true;
+
+    if(timeout) {
+        timeoutId.value = setTimeout(() => {
+            // the toast may have been hidden by the user manually
+            // before the timer expires, so checking if it's still
+            // visible before calling hide() so the 'hide' event
+            // does not fire again unnecessarily
+            if(visible.value) {
+                hide();
+            }
+        }, timeout);
+    }
+}
+
+function hide(buttonIndex) {
+    document.body.style.overflow = '';
+    visible.value = false;
+    emit('hide', buttonIndex === undefined ? null : buttonIndex);
+    removeTimeout();
+}
+
+
+function removeTimeout() {
+    if(timeoutId.value) {
+        clearTimeout(timeoutId.value);
+        timeoutId.value = null;
+    }
+}
+
+onMounted(() => {
+    onKeyStroke('Escape', hide, { target: document });
+});
+
+onUnmounted(() => {
+    removeTimeout();
+});
 </script>
 
 
@@ -124,11 +120,10 @@ export default {
 
             <div
                 v-if="visible"
-                class="flex items-center overflow-x-hidden overflow-y-auto fixed top-0 left-0 w-full h-full z-50 outline-none focus:outline-none"
-                v-hotkey="{'esc': onHotkey}">
+                class="flex items-center overflow-x-hidden overflow-y-auto fixed top-0 left-0 w-full h-full z-50 outline-none focus:outline-none">
 
                 <!--content-->
-                <div class="fig-texas-toast" v-click-outside="onHotkey">
+                <div class="fig-texas-toast" v-click-outside="hide">
                     <div
                         class="relative max-w-xs' mx-auto border-0 shadow-tight bg-white outline-none focus:outline-none">
 
@@ -156,7 +151,7 @@ export default {
                                         icon="x"
                                         variant="plain"
                                         size="sm"
-                                        @click="onHotkey" />
+                                        @click="hide" />
                                 </div>
                             </div>
 
@@ -171,13 +166,13 @@ export default {
                             <button
                                 type="button"
                                 class="confirm-btn-right hover:bg-gray-200 bg-gray-100 focus:outline-none"
-                                @click="() => {hide(1)}"><slot name="secondaryButtonLabel">View Cart</slot></button>
+                                @click="() => { hide(1) }"><slot name="secondaryButtonLabel">{{ $t('View cart') }}</slot></button>
                             <button
                                 type="button"
                                 ref="btn_confirm_checkout"
                                 class="focus:outline-none"
                                 :class="theme.primaryButtonClass"
-                                @click="() => {hide(2)}"><slot name="primaryButtonLabel">Checkout</slot></button>
+                                @click="() => { hide(2) }"><slot name="primaryButtonLabel">{{ $t('Checkout') }}</slot></button>
                         </div>
                     </div>
                 </div>

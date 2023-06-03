@@ -64,6 +64,7 @@ export default {
     'Use this address': 'Use this address',
 
     'Value': 'Value',
+    'View cart': 'View cart',
 
     'Yes': 'Yes',
     'Yes, return to cart': 'Yes, return to cart',
