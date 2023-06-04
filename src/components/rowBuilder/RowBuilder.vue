@@ -1,7 +1,9 @@
 <script>
+import { RowBuilderProps } from './useRowBuilder.js';
 export default {
-    name: 'RowBuilder'
+    name: 'FigRowBuilder'
 }
+export const builderProps = RowBuilderProps;
 </script>
 
 <script setup>
@@ -9,52 +11,9 @@ import { VueDraggableNext as draggable } from 'vue-draggable-next';
 import FigButton from '../button/Button.vue';
 import FigPopConfirm from '../popConfirm/PopConfirm.vue';
 import FigIcon from '../icon/FigIcon.vue';
-import { rowBuilderDensity } from './constants.js';
 import useRowBuilder from './useRowBuilder.js';
 
-const props = defineProps({
-    modelValue: {
-        type: Array,
-        default: function() {
-            return [];
-        }
-    },
-
-    sortable: {
-        type: Boolean,
-        default: true
-    },
-
-    addable: {
-        type: Boolean,
-        default: true
-    },
-
-    removable: {
-        type: Boolean,
-        default: true
-    },
-
-    removeConfirm: {
-        type: Boolean,
-        default: true
-    },
-
-    maxRows: {
-        type: Number
-    },
-
-    density: {
-        type: String,
-        default: rowBuilderDensity.sm,
-        validator: (value) => Object.keys(rowBuilderDensity).includes(value)
-    },
-
-    addNewOnEmpty: {
-        type: Boolean,
-        default: false
-    }
-});
+const props = defineProps(builderProps);
 
 const emit = defineEmits([
     'add',

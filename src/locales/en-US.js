@@ -49,6 +49,7 @@ export default {
     'Please enter a valid email address.': 'Please enter a valid email address.',
     'Please make sure your mailing address is correct to ensure accurate delivery.': 'Please make sure your mailing address is correct to ensure accurate delivery.',
     'Postal code': 'Postal code',
+    'Property': 'Property',
 
     'Required': 'Required',
     '{num} result | {num} results': '{num} result | {num} results',

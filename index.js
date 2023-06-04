@@ -65,7 +65,7 @@ export { default as FigSpec } from './src/layouts/spec/Spec.vue';
 
 export { default as FigMessage } from './src/components/message/Message.vue';
 export { default as FigModal } from './src/components/modal/Modal.vue';
-// export { default as FigMetaDataBuilder } from './src/components/metaDataBuilder/MetaDataBuilder.vue'
+export { default as FigMetaDataBuilder } from './src/components/metaDataBuilder/MetaDataBuilder.vue'
 export { default as FigMoney } from './src/components/money/Money.vue';
 
 // export { default as FigNuxtImgBunny } from './src/components/nuxtImgBunny/NuxtImgBunny.vue';

@@ -1,5 +1,56 @@
 import { computed, ref, watch } from 'vue';
 
+export const rowBuilderDensity = {
+    sm: 'sm',
+    md: 'md',
+    lg: 'lg'
+}
+
+export const RowBuilderProps = {
+    modelValue: {
+        type: Array,
+        default: function() {
+            return [];
+        }
+    },
+
+    sortable: {
+        type: Boolean,
+        default: true
+    },
+
+    addable: {
+        type: Boolean,
+        default: true
+    },
+
+    removable: {
+        type: Boolean,
+        default: true
+    },
+
+    removeConfirm: {
+        type: Boolean,
+        default: true
+    },
+
+    maxRows: {
+        type: Number
+    },
+
+    density: {
+        type: String,
+        default: rowBuilderDensity.sm,
+        validator: (value) => Object.keys(rowBuilderDensity).includes(value)
+    },
+
+    addNewOnEmpty: {
+        type: Boolean,
+        default: false
+    }
+};
+
+
 export default function useRowBuilder(props, emit) {
     const rows = ref(Array.isArray(props.modelValue) ? props.modelValue : []);
 

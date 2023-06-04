@@ -53,5 +53,6 @@ const Template = (args, { argTypes }) => ({
 
 export const RowBuilder = Template.bind({});
 RowBuilder.args = {
+    sortable: true
 };
 
