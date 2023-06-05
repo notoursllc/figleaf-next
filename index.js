@@ -1,5 +1,5 @@
 export { default as FigAddress } from './src/components/address/Address.vue';
-// export { default as FigAddressForm } from './src/components/addressForm/AddressForm.vue';
+export { default as FigAddressForm } from './src/components/addressForm/AddressForm.vue';
 
 export { default as FigBadge } from './src/components/badge/Badge.vue';
 export { default as FigBooleanTag } from './src/components/booleanTag/BooleanTag.vue';
@@ -33,7 +33,6 @@ export { default as FigFormMultiSelect } from './src/components/form/multiSelect
 export { default as FigFormInputNumber } from './src/components/form/number/FormInputNumber.vue';
 export { default as FigFormInputToggle } from './src/components/form/toggle/FormInputToggle.vue';
 export { default as FigFormRadio } from './src/components/form/radio/FormRadio.vue';
-// export { default as FigFormSelect } from './src/components/form/select/FormSelect.vue';
 export { default as FigFormSelectBitwise } from './src/components/form/selectBitwise/FormSelectBitwise.vue';
 export { default as FigFormSelectNative } from './src/components/form/selectNative/FormSelectNative.vue';
 export { default as FigFormSelectStripeTaxCode } from './src/components/form/selectStripeTaxCode/FormSelectStripeTaxCode.vue';

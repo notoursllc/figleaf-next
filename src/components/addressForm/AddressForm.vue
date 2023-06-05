@@ -1,19 +1,23 @@
 <script>
-import Vue from 'vue';
-import Vuelidate from 'vuelidate';
+export default {
+    name: 'FigAddressForm'
+}
+</script>
+
+<script setup>
+import { computed, ref, reactive, onMounted, watch } from 'vue';
+import { email, required } from '@vuelidate/validators';
+import { useVuelidate } from '@vuelidate/core';
 import isObject from 'lodash.isobject';
-import { email, required } from 'vuelidate/lib/validators';
-import FigFormText from '../form/text/FormText';
-import FigFormGroup from '../form/group/FormGroup';
-import FigButton from '../button/Button';
-import FigSelectCountry from '../selectCountry/SelectCountry';
-import FigSelectStateProvince from '../selectStateProvince/SelectStateProvince';
-import FigIcon from '../icon/FigIcon';
-import FigIconLabel from '../iconLabel/IconLabel';
+import FigFormText from '../form/text/FormText.vue';
+import FigFormGroup from '../form/group/FormGroup.vue';
+import FigSelectCountry from '../selectCountry/SelectCountry.vue';
+import FigSelectStateProvince from '../selectStateProvince/SelectStateProvince.vue';
+import FigIcon from '../icon/FigIcon.vue';
+import FigIconLabel from '../iconLabel/IconLabel.vue';
 import FigFormSelectNative from '../form/selectNative/FormSelectNative.vue';
 import FigTooltip from '../tooltip/Tooltip.vue';
-import FigRequired from '../form/Required.vue';
-import FigOverlay from '../overlay/Overlay.vue';
+import FigRequired from '../form/required/Required.vue';
 
 import {
     addressFormRequiredProps,
@@ -21,402 +25,652 @@ import {
     addressFormRowSpacing
 } from './constants';
 
-Vue.use(Vuelidate);
 
+const props = defineProps({
+    modelValue: {
+        type: Object,
+        required: true
+    },
 
-export default {
-    name: 'AddressForm',
+    firstName: {
+        type: String
+    },
 
-    props: {
-        value: {
-            type: Object,
-            required: true
-        },
+    lastName: {
+        type: String
+    },
 
-        stripe: {
-            type: Object,
-            required: true
-        },
+    streetAddress: {
+        type: String
+    },
 
-        required: {
-            type: Array,
-            default() {
-                return Object.keys(addressFormRequiredProps);
-            }
-            // default: Object.keys(addressFormRequiredProps)
-        },
+    extendedAddress: {
+        type: String
+    },
 
-        inputSize: {
-            type: String,
-            default: addressFormInputSizes.lg,
-            validator: (value) => Object.keys(addressFormInputSizes).includes(value)
-        },
+    city: {
+        type: String
+    },
 
-        hidePhone: {
-            type: Boolean
-        },
+    state: {
+        type: String
+    },
 
-        hideEmail: {
-            type: Boolean
-        },
+    postalCode: {
+        type: String
+    },
 
-        hideGift: {
-            type: Boolean
-        },
+    company: {
+        type: String
+    },
 
-        rowSpacing: {
-            type: [Number, String],
-            default: 1,
-            validator: (value) => addressFormRowSpacing.includes(parseInt(value, 10))
-        },
+    countryCodeAlpha2: {
+        type: String
+    },
 
-        cellSpacing: {
-            type: [Number, String],
-            default: 2,
-            validator: (value) => addressFormRowSpacing.includes(parseInt(value, 10))
+    phone: {
+        type: String
+    },
+
+    email: {
+        type: String
+    },
+
+    is_gift: {
+        type: Boolean
+    },
+
+    stripe: {
+        type: Object,
+        required: true
+    },
+
+    required: {
+        type: Array,
+        default() {
+            return Object.keys(addressFormRequiredProps);
         }
     },
 
-    components: {
-        FigButton,
-        FigFormText,
-        FigFormGroup,
-        FigSelectCountry,
-        FigSelectStateProvince,
-        FigIcon,
-        FigIconLabel,
-        FigFormSelectNative,
-        FigTooltip,
-        FigRequired,
-        FigOverlay
+    inputSize: {
+        type: String,
+        default: addressFormInputSizes.lg,
+        validator: (value) => Object.keys(addressFormInputSizes).includes(value)
     },
 
-    data: function() {
-        return {
-            addressFormLoading: true,
-            form: {
-                firstName: null,
-                lastName: null,
-                streetAddress: null,
-                extendedAddress: null,
-                city: null,
-                state: null,
-                postalCode: null,
-                countryCodeAlpha2: null,
-                phone: null,
-                email: null,
-                is_gift: false
-            },
-            showExtraInputs: false
-        };
+    hidePhone: {
+        type: Boolean
     },
 
-    validations: function() {
-        return this.validationObject;
+    hideEmail: {
+        type: Boolean
     },
 
-    computed: {
-        rowClasses() {
-            return `flex flex-wrap -mx-${this.cellSpacing}`;
-        },
-
-        oneColCellClasses() {
-            return `w-full mb-${this.rowSpacing} px-${this.cellSpacing}`;
-        },
-
-        twoColCellClasses() {
-            return `w-full mb-${this.rowSpacing} px-${this.cellSpacing} sm:w-1/2`;
-        },
-
-        threeColCellClasses() {
-            return `w-full mb-${this.rowSpacing} px-${this.cellSpacing} sm:w-1/3`;
-        },
-
-        requiredProps() {
-            const reqd = [ ...this.required ];
-
-            if(this.hidePhone && reqd.includes('phone')) {
-                reqd.splice(reqd.indexOf('phone'), 1);
-            }
-
-            if(this.hideEmail && reqd.includes('email')) {
-                reqd.splice(reqd.indexOf('email'), 1);
-            }
-
-            return reqd;
-        },
-
-        validationObject() {
-            const baseValidation = {};
-
-            for (let prop in this.form) {
-                if (this.requiredProps.includes(prop)) {
-                    baseValidation[prop] = { required };
-                }
-            }
-
-            baseValidation.email = this.requiredProps.includes('email') ? {...baseValidation.email, email } : { email };
-
-            return {
-                form: baseValidation
-            };
-        }
+    hideGift: {
+        type: Boolean
     },
 
-    methods: {
-        canShowValidationMsg(attr) {
-            if(!this.$v.form.hasOwnProperty(attr) || !this.$v.form[attr].$dirty) {
-                return false;
-            }
-
-            const attrValidations = this.validationObject.form[attr];
-            let canShow = false;
-
-            if(isObject(attrValidations)) {
-                Object.keys(attrValidations).forEach((key) => {
-                    if(!this.$v.form[attr][key]) {
-                        canShow = true;
-                    }
-                });
-            }
-
-            return canShow;
-        },
-
-        inputState(attr) {
-            if(!this.$v.form[attr] || !this.$v.form[attr].$dirty) {
-                return null;
-            }
-
-            switch(attr) {
-                case 'email':
-                    return !this.$v.form.email.email ? false : null;
-
-                default:
-                    if(!this.$v.form[attr].required) {
-                        return false;
-                    }
-                    return null;
-            }
-        },
-
-        async initAddressForm() {
-            const elements = this.stripe.elements({
-                loader: 'always',
-                // locale: '' // https://edge.stripe.com/docs/js/appendix/supported_locales?type=cvc_update
-                appearance: {
-                    // theme: 'stripe',
-                    // variables: {
-                    //     colorPrimary: '#0570de',
-                    //     colorBackground: '#ffffff',
-                    //     colorBackgroundDeemphasize10: 'red',
-                    //     colorText: '#30313d',
-                    //     colorDanger: '#df1b41',
-                    //     fontFamily: 'Ideal Sans, system-ui, sans-serif',
-                    //     spacingUnit: '4px',
-                    //     borderRadius: '4px',
-                    // }
-                    theme: 'none',
-                    rules: {
-                        '.Tab': {
-                            border: '1px solid #E0E6EB',
-                            boxShadow: '0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(18, 42, 66, 0.02)',
-                        },
-
-                        '.Tab:hover': {
-                            color: 'var(--colorText)',
-                        },
-
-                        '.Tab--selected': {
-                            borderColor: '#E0E6EB',
-                            boxShadow: '0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(18, 42, 66, 0.02), 0 0 0 2px var(--colorPrimary)',
-                        },
-
-                        '.Input': {
-                            border: '1px solid #cccccc',
-                            borderRadius: '2px',
-                        },
-                        '.Input--invalid': {
-                            boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.07), 0 0 0 2px var(--colorDanger)',
-                        },
-                    }
-                }
-            });
-
-            // https://stripe.com/docs/js/elements_object/create_address_element#address_element_create-options
-            const addressElement = elements.create('address', {
-                mode: 'shipping',
-                autocomplete: {
-                    mode: 'automatic'
-                },
-                blockPoBox: true,
-                fields: {
-                    phone: 'always',
-                    // email: 'always',
-                },
-                validation: {
-                    phone: {
-                        required: 'always',
-                    },
-                    // email: {
-                    //     required: 'always',
-                    // },
-                },
-                display: {
-                    name: 'split'
-                },
-                defaultValues: {
-                    // name: 'Jane Doe',
-                    firstName: this.form.firstName,
-                    lastName: this.form.lastName,
-                    phone: this.form.phone,
-                    address: {
-                        line1: this.form.streetAddress,
-                        line2: this.form.extendedAddress,
-                        city: this.form.city,
-                        state: this.form.state,
-                        postal_code: this.form.postalCode,
-                        country: this.form.countryCodeAlpha2,
-                    }
-                }
-            });
-
-            addressElement.mount("#address-element");
-            this.addressFormLoading = false;
-
-            addressElement.on('change', (event) => {
-                console.log("ON CHANGE", event)
-
-                if(event.value.address.line1) {
-                    this.showExtraInputs = true;
-                }
-
-                if (event.complete) {
-                    // Extract potentially complete address
-                    const address = event.value.address;
-                    this.form.firstName = event.value.firstName;
-                    this.form.lastName = event.value.lastName;
-                    this.form.phone = event.value.phone;
-
-                    this.form.streetAddress = address.line1;
-                    this.form.extendedAddress = address.line2;
-                    this.form.city = address.city;
-                    this.form.state = address.state;
-                    this.form.postalCode = address.postal_code;
-                    this.form.countryCodeAlpha2 = address.country;
-
-                    this.$emit('input', this.form);
-
-                    this.$emit(
-                        'invalid',
-                        this.$v.form.$invalid ? true : false
-                    );
-                }
-                else {
-                    this.$emit('invalid', true);
-                }
-            })
-        }
+    rowSpacing: {
+        type: [Number, String],
+        default: 1,
+        validator: (value) => addressFormRowSpacing.includes(parseInt(value, 10))
     },
 
-    mounted() {
-        this.initAddressForm();
-    },
+    cellSpacing: {
+        type: [Number, String],
+        default: 2,
+        validator: (value) => addressFormRowSpacing.includes(parseInt(value, 10))
+    }
+});
 
-    watch: {
-        '$v.form.$invalid': {
-            handler: function(newVal) {
-                this.$emit('invalid', newVal);
-            },
-            immediate: true
-        },
+const emit = defineEmits([
+    'update:firstName',
+    'update:lastName',
+    'update:streetAddress',
+    'update:extendedAddress',
+    'update:city',
+    'update:state',
+    'update:postalCode',
+    'update:company',
+    'update:countryCodeAlpha2',
+    'update:phone',
+    'update:email',
+    'update:is_gift',
+    'invalid'
+])
 
-        'value': {
-            handler: function(newVal) {
-                console.log("VAL WATCH", newVal)
-                if(newVal) {
-                    for(let prop in this.form) {
-                        if(newVal.hasOwnProperty(prop)) {
-                            this.form[prop] = newVal[prop];
-                        }
-                    }
-                }
+const addressFormLoading = ref(true);
+const showExtraInputs = ref(false);
+const form = reactive({
+    firstName: props.firstName,
+    lastName: props.lastName,
+    streetAddress: props.streetAddress,
+    extendedAddress: props.extendedAddress,
+    city: props.city,
+    state: props.state,
+    postalCode: props.postalCode,
+    countryCodeAlpha2: props.countryCodeAlpha2,
+    phone: props.phone,
+    email: props.email,
+    is_gift: props.is_gift
+});
 
-            },
-            immediate: true
+const requiredProps = computed(() => {
+    const reqd = [ ...props.required ];
+
+    if(props.hidePhone && reqd.includes('phone')) {
+        reqd.splice(reqd.indexOf('phone'), 1);
+    }
+
+    if(props.hideEmail && reqd.includes('email')) {
+        reqd.splice(reqd.indexOf('email'), 1);
+    }
+
+    return reqd;
+});
+
+const vuelidateRules = computed(() => {
+    const baseValidation = {};
+
+    for (let prop in form) {
+        if (requiredProps.value.includes(prop)) {
+            baseValidation[prop] = { required };
         }
     }
-};
+
+    baseValidation.email = requiredProps.value.includes('email') ? {...baseValidation.email, email } : { email };
+
+    return baseValidation;
+});
+
+const v$ = useVuelidate(vuelidateRules, form);
+
+function emitAllForm() {
+    for(let prop in form) {
+        emit(`update:${prop}`, form[prop]);
+    }
+}
+
+function canShowRequiredMsg(attr) {
+    return v$.value[attr]?.$dirty && v$.value[attr]?.required.$invalid;
+}
+
+function inputState(attr) {
+    if(!v$[attr] || !v$[attr].$dirty) {
+        return null;
+    }
+
+    switch(attr) {
+        case 'email':
+            return !v$[attr].email ? false : null;
+
+        default:
+            if(!v$[attr].required) {
+                return false;
+            }
+            return null;
+    }
+}
+
+
+function touchV(prop, value) {
+    v$.value[prop]?.$touch();
+    emit(`update:${prop}`, value);
+}
+
+async function initAddressForm() {
+    const elements = props.stripe.elements({
+        loader: 'always',
+        // locale: '' // https://edge.stripe.com/docs/js/appendix/supported_locales?type=cvc_update
+        appearance: {
+            // theme: 'stripe',
+            // variables: {
+            //     colorPrimary: '#0570de',
+            //     colorBackground: '#ffffff',
+            //     colorBackgroundDeemphasize10: 'red',
+            //     colorText: '#30313d',
+            //     colorDanger: '#df1b41',
+            //     fontFamily: 'Ideal Sans, system-ui, sans-serif',
+            //     spacingUnit: '4px',
+            //     borderRadius: '4px',
+            // }
+            theme: 'none',
+            rules: {
+                '.Tab': {
+                    border: '1px solid #E0E6EB',
+                    boxShadow: '0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(18, 42, 66, 0.02)',
+                },
+
+                '.Tab:hover': {
+                    color: 'var(--colorText)',
+                },
+
+                '.Tab--selected': {
+                    borderColor: '#E0E6EB',
+                    boxShadow: '0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(18, 42, 66, 0.02), 0 0 0 2px var(--colorPrimary)',
+                },
+
+                '.Input': {
+                    border: '1px solid #cccccc',
+                    borderRadius: '2px',
+                },
+                '.Input--invalid': {
+                    boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.07), 0 0 0 2px var(--colorDanger)',
+                },
+            }
+        }
+    });
+
+    // https://stripe.com/docs/js/elements_object/create_address_element#address_element_create-options
+    const addressElement = elements.create('address', {
+        mode: 'shipping',
+        autocomplete: {
+            mode: 'automatic'
+        },
+        blockPoBox: true,
+        fields: {
+            phone: 'always',
+            // email: 'always',
+        },
+        validation: {
+            phone: {
+                required: 'always',
+            },
+            // email: {
+            //     required: 'always',
+            // },
+        },
+        display: {
+            name: 'split'
+        },
+        defaultValues: {
+            // name: 'Jane Doe',
+            firstName: form.firstName,
+            lastName: form.lastName,
+            phone: form.phone,
+            address: {
+                line1: form.streetAddress,
+                line2: form.extendedAddress,
+                city: form.city,
+                state: form.state,
+                postal_code: form.postalCode,
+                country: form.countryCodeAlpha2,
+            }
+        }
+    });
+
+    addressElement.mount("#address-element");
+    addressFormLoading.value = false;
+
+    addressElement.on('change', (event) => {
+        console.log("ON CHANGE", event)
+
+        if(event.value.address.line1) {
+            showExtraInputs.value = true;
+        }
+
+        if (event.complete) {
+            // Extract potentially complete address
+            const address = event.value.address;
+            form.firstName = event.value.firstName;
+            form.lastName = event.value.lastName;
+            form.phone = event.value.phone;
+
+            form.streetAddress = address.line1;
+            form.extendedAddress = address.line2;
+            form.city = address.city;
+            form.state = address.state;
+            form.postalCode = address.postal_code;
+            form.countryCodeAlpha2 = address.country;
+
+            emitAllForm()
+            emit('invalid', v$.value.$invalid ? true : false);
+        }
+        else {
+            emit('invalid', true);
+        }
+    })
+}
+
+onMounted(() => {
+    initAddressForm();
+});
+
+watch(
+    () => props.firstName,
+    (newVal) => {
+        form.firstName = newVal;
+    }
+)
+
+watch(
+    () => props.lastName,
+    (newVal) => {
+        form.lastName = newVal;
+    }
+)
+
+watch(
+    () => props.streetAddress,
+    (newVal) => {
+        form.streetAddress = newVal;
+    }
+)
+
+watch(
+    () => props.extendedAddress,
+    (newVal) => {
+        form.extendedAddress = newVal;
+    }
+)
+
+watch(
+    () => props.city,
+    (newVal) => {
+        form.city = newVal;
+    }
+)
+
+watch(
+    () => props.state,
+    (newVal) => {
+        form.state = newVal;
+    }
+)
+
+watch(
+    () => props.postalCode,
+    (newVal) => {
+        form.postalCode = newVal;
+    }
+)
+
+watch(
+    () => props.countryCodeAlpha2,
+    (newVal) => {
+        form.countryCodeAlpha2 = newVal;
+    }
+)
+
+watch(
+    () => props.company,
+    (newVal) => {
+        form.company = newVal;
+    }
+)
+
+watch(
+    () => props.phone,
+    (newVal) => {
+        form.phone = newVal;
+    }
+)
+
+watch(
+    () => props.is_gift,
+    (newVal) => {
+        form.is_gift = newVal;
+    }
+)
+
+watch(
+    () => v$.value.$invalid,
+    (newVal) => {
+        emit('invalid', newVal);
+    }
+)
 </script>
 
+
 <template>
-    <div>
+    <div class="grid grid-cols-1 gap-2">
+        <div class="grid grid-cols-2 gap-4">
+            <!-- first name -->
+            <fig-form-group>
+                <template v-slot:label>
+                    <span class="fig-address-label">{{ $t('First name') }}</span>
+                    <fig-required v-if="requiredProps.includes('firstName')" />
+                </template>
 
-        <fig-overlay :show="addressFormLoading">
-            <div id="address-element" class="mb-2"></div>
-        </fig-overlay>
+                <fig-form-text
+                    v-model.trim="form.firstName"
+                    :size="inputSize"
+                    @update:modelValue="(val) => touchV('firstName', val)"
+                    :state="inputState('firstName')"
+                    class="w-full" />
 
-        <!-- email -->
-        <template v-if="showExtraInputs">
-            <div v-if="!hideEmail">
-                <fig-form-group>
-                    <template v-slot:label>
-                        <span class="fig-address-label">{{ $t('Email') }}</span>
-                        <!-- <fig-required /> -->
-                    </template>
+                <template v-slot:error>
+                    <div v-show="canShowRequiredMsg('firstName')">{{ $t('Required') }}</div>
+                </template>
+            </fig-form-group>
 
-                    <fig-form-text
-                        v-model.trim="form.email"
-                        type="email"
-                        :size="inputSize"
-                        @input="(val) => { $v.form.email.$touch() }"
-                        :state="inputState('email')" />
+            <!-- last name -->
+            <fig-form-group>
+                <template v-slot:label>
+                    <span class="fig-address-label">{{ $t('Last name') }}</span>
+                    <fig-required v-if="requiredProps.includes('lastName')" />
+                </template>
 
-                    <template v-slot:error v-show="canShowValidationMsg('email')">
-                        <div v-if="$v.form.email.hasOwnProperty('required') && !$v.form.email.required">{{ $t('Required') }}</div>
-                        <div v-if="!$v.form.email.email">{{ $t('Please enter a valid email address.') }}</div>
-                    </template>
-                </fig-form-group>
-            </div>
+                <fig-form-text
+                    v-model.trim="form.lastName"
+                    :size="inputSize"
+                    @update:modelValue="(val) => touchV('lastName', val)"
+                    :state="inputState('lastName')"
+                    class="w-full" />
 
-            <div class="pt-2" v-if="!hideGift">
-                <fig-form-group :stacked="false">
-                    <template v-slot:label>
-                        <fig-icon-label>
-                            <template v-slot:left>
-                                <fig-icon
-                                    icon="gift"
-                                    :height="22"
-                                    :width="22"
-                                    :stroke-width="1.5" />
-                            </template>
-                            {{ $t('Is this order a gift?') }}
-                        </fig-icon-label>
-                    </template>
-                    <div class="pl-2">
-                        <fig-form-select-native
-                            v-model.trim="form.is_gift"
-                            :options="[
-                                { label: $t('No'), value: false },
-                                { label: $t('Yes'), value: true }
-                            ]" />
+                <template v-slot:error>
+                    <div v-show="canShowRequiredMsg('lastName')">{{ $t('Required') }}</div>
+                </template>
+            </fig-form-group>
+        </div>
 
-                        <fig-tooltip :centered="false">
-                            <template v-slot:toggler>
-                                <div class="pl-1">
-                                    <fig-icon
-                                        icon="info-circle"
-                                        :height="20"
-                                        :width="20" />
-                                </div>
-                            </template>
-                            {{ $t('is_gift_tooltip') }}
-                        </fig-tooltip>
-                    </div>
-                </fig-form-group>
-            </div>
-        </template>
+        <!-- street address -->
+        <fig-form-group>
+            <template v-slot:label>
+                <span class="fig-address-label">{{ $t('Address line 1') }}</span>
+                <fig-required v-if="requiredProps.includes('streetAddress')" />
+            </template>
 
+            <fig-form-text
+                v-model.trim="form.streetAddress"
+                :size="inputSize"
+                @update:modelValue="(val) => touchV('streetAddress', val)"
+                :state="inputState('streetAddress')"
+                class="w-full" />
+
+            <template v-slot:error>
+                <div v-show="canShowRequiredMsg('streetAddress')">{{ $t('Required') }}</div>
+            </template>
+        </fig-form-group>
+
+        <!-- extended address -->
+        <fig-form-group>
+            <template v-slot:label>
+                <span class="fig-address-label">{{ $t('Address line 2') }}</span>
+                <fig-required v-if="requiredProps.includes('extendedAddress')" />
+            </template>
+
+            <fig-form-text
+                v-model.trim="form.extendedAddress"
+                :size="inputSize"
+                @update:modelValue="(val) => touchV('extendedAddress', val)"
+                :state="inputState('extendedAddress')"
+                class="w-full" />
+
+            <template v-slot:error>
+                <div v-show="canShowRequiredMsg('extendedAddress')">{{ $t('Required') }}</div>
+            </template>
+        </fig-form-group>
+
+        <!-- country -->
+        <fig-form-group>
+            <template v-slot:label>
+                <span class="fig-address-label">{{ $t('Country') }}</span>
+                <fig-required v-if="requiredProps.includes('countryCodeAlpha2')" />
+            </template>
+
+            <fig-select-country
+                v-model.trim="form.countryCodeAlpha2"
+                :size="inputSize"
+                @update:modelValue="(val) => touchV('countryCodeAlpha2', val)"
+                :state="inputState('countryCodeAlpha2')"
+                :clearable="false"
+                class="w-full" />
+
+            <template v-slot:error>
+                <div v-show="canShowRequiredMsg('countryCodeAlpha2')">{{ $t('Required') }}</div>
+            </template>
+        </fig-form-group>
+
+
+        <div
+            class="grid grid-cols-3 gap-4"
+            v-cloak
+            v-show="form.countryCodeAlpha2">
+            <!-- city -->
+            <fig-form-group>
+                <template v-slot:label>
+                    <span class="fig-address-label">{{ $t('City') }}</span>
+                    <fig-required v-if="requiredProps.includes('city')" />
+                </template>
+
+                <fig-form-text
+                    v-model.trim="form.city"
+                    :size="inputSize"
+                    @update:modelValue="(val) => touchV('city', val)"
+                    :state="inputState('city')"
+                    class="w-full" />
+
+                <template v-slot:error>
+                    <div v-show="canShowRequiredMsg('city')">{{ $t('Required') }}</div>
+                </template>
+            </fig-form-group>
+
+            <!-- state -->
+            <fig-form-group>
+                <template v-slot:label>
+                    <span class="fig-address-label">{{ $t('State/Province/Region') }}</span>
+                    <fig-required v-if="requiredProps.includes('state')" />
+                </template>
+
+                <fig-select-state-province
+                    :country="form.countryCodeAlpha2"
+                    v-model.trim="form.state"
+                    :clearable="false"
+                    class="w-full"
+                    :size="inputSize"
+                    @update:modelValue="(val) => touchV('state', val)" />
+
+                <template v-slot:error>
+                    <div v-show="canShowRequiredMsg('state')">{{ $t('Required') }}</div>
+                </template>
+            </fig-form-group>
+
+            <!-- zip -->
+            <fig-form-group>
+                <template v-slot:label>
+                    <span class="fig-address-label">{{ $t('Postal code') }}</span>
+                    <fig-required v-if="requiredProps.includes('postalCode')" />
+                </template>
+
+                <fig-form-text
+                    v-model.trim="form.postalCode"
+                    :size="inputSize"
+                    @update:modelValue="(val) => touchV('postalCode', val)"
+                    :state="inputState('postalCode')"
+                    class="w-full" />
+
+                <template v-slot:error>
+                    <div v-show="canShowRequiredMsg('postalCode')">{{ $t('Required') }}</div>
+                </template>
+            </fig-form-group>
+        </div>
+
+        <div
+            class="grid grid-cols-2 gap-4"
+            v-if="!hideEmail || !hidePhone">
+            <!-- email -->
+            <fig-form-group v-if="!hideEmail">
+                <template v-slot:label>
+                    <span class="fig-address-label">{{ $t('Email') }}</span>
+                    <fig-required v-if="requiredProps.includes('email')" />
+                </template>
+
+                <fig-form-text
+                    v-model.trim="form.email"
+                    type="email"
+                    :size="inputSize"
+                    @update:modelValue="(val) => touchV('email', val)"
+                    :state="inputState('email')"
+                    class="w-full" />
+
+                <template v-slot:error>
+                    <div v-show="canShowRequiredMsg('email')">{{ $t('Required') }}</div>
+                    <div v-if="v$.email?.email.$invalid">{{ $t('Please enter a valid email address.') }}</div>
+                </template>
+            </fig-form-group>
+
+            <!-- phone number -->
+            <fig-form-group v-if="!hidePhone">
+                <template v-slot:label>
+                    <span class="fig-address-label">{{ $t('Phone number') }}</span>
+                    <fig-required v-if="requiredProps.includes('phone')" />
+                </template>
+
+                <fig-form-text
+                    v-model.trim="form.phone"
+                    :size="inputSize"
+                    @update:modelValue="(val) => touchV('phone', val)"
+                    :state="inputState('phone')"
+                    class="w-full" />
+
+                <template v-slot:error>
+                    <div v-show="canShowRequiredMsg('phone')">{{ $t('Required') }}</div>
+                </template>
+            </fig-form-group>
+        </div>
+
+        <div v-if="!hideGift">
+            <fig-form-group>
+                <template v-slot:label>
+                    <fig-icon-label>
+                        <template v-slot:left>
+                            <fig-icon
+                                icon="gift"
+                                :height="22"
+                                :width="22"
+                                :stroke-width="1.5" />
+                        </template>
+                        <span class="fig-address-label">{{ $t('Is this order a gift?') }}</span>
+                    </fig-icon-label>
+                    <fig-required v-if="requiredProps.includes('is_gift')" />
+                </template>
+
+                <div class="flex items-center gap-1">
+                    <fig-form-select-native
+                        v-model.trim="form.is_gift"
+                        :options="[
+                            { label: $t('No'), value: false },
+                            { label: $t('Yes'), value: true }
+                        ]"
+                        @update:modelValue="(val) => touchV('is_gift', val)" />
+
+                    <fig-tooltip :centered="false">
+                        <template v-slot:toggler>
+                            <fig-icon
+                                icon="info-circle"
+                                :height="24"
+                                :width="24" />
+                        </template>
+                        {{ $t('is_gift_tooltip') }}
+                    </fig-tooltip>
+                </div>
+
+                <template v-slot:error>
+                    <div v-show="canShowRequiredMsg('is_gift')">{{ $t('Required') }}</div>
+                </template>
+            </fig-form-group>
+        </div>
     </div>
 </template>
 

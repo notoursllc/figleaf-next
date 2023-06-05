@@ -16,14 +16,14 @@ const Template = (args, { argTypes }) => ({
     },
     setup() {
         const form = reactive({
-            countryCodeAlpha2: null,
-            firstName: 'testfirstname',
-            lastName: null,
+            firstName: null,
+            lastName: 'LaBla',
             streetAddress: null,
             extendedAddress: null,
             city: null,
             state: null,
             postalCode: null,
+            countryCodeAlpha2: null,
             company: null,
             phone: null,
             email: null,
@@ -38,17 +38,31 @@ const Template = (args, { argTypes }) => ({
 
         return {
             args,
-            form,
             formIsInvalid,
-            onInvalid
+            onInvalid,
+            form
         };
     },
     template: `
         <div>
-            <fig-address-form v-model="form" v-bind="attrs" @invalid="onInvalid" />
+            <fig-address-form
+                v-model:firstName="form.firstName"
+                v-model:lastName="form.lastName"
+                v-model:streetAddress="form.streetAddress"
+                v-model:extendedAddress="form.extendedAddress"
+                v-model:city="form.city"
+                v-model:state="form.state"
+                v-model:postalCode="form.postalCode"
+                v-model:countryCodeAlpha2="form.countryCodeAlpha2"
+                v-model:company="form.company"
+                v-model:phone="form.phone"
+                v-model:email="form.email"
+                v-model:is_gift="form.is_gift"
+                v-bind="args"
+                @invalid="onInvalid" />
 
-            <div class="pt-6">
-                <div>FORM: {{ form }}</div>
+            <div class="pt-10">
+                <pre>{{ form }}</pre>
                 <div>FORM IS INVALID: {{ formIsInvalid }}</div>
             </div>
         </div>
@@ -57,8 +71,6 @@ const Template = (args, { argTypes }) => ({
 
 export const AddressForm = Template.bind({});
 AddressForm.args = {
-    // required: ['lastName'],
-    rowSpacing: 1,
-    cellSpacing: 2
+    // required: []
 };
 

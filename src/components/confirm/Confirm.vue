@@ -24,7 +24,7 @@ const { activate, deactivate } = useFocusTrap(
 );
 
 const currentConfirm = computed(() => {
-    return confirm.state.currentConfirm;
+    return confirm?.state.currentConfirm;
 });
 
 const title = computed(() => {
