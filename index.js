@@ -72,9 +72,9 @@ export { default as FigMoney } from './src/components/money/Money.vue';
 export { default as FigOperationsDropdown } from './src/components/operationsDropdown/OperationsDropdown.vue';
 export { default as FigOverlay } from './src/components/overlay/Overlay.vue';
 
-// export { default as FigPaginationBar } from './src/components/pagination/pagination-bar/PaginationBar.vue';
-// export { default as FigPaginator } from './src/components/pagination/paginator/Paginator.vue';
-// export { default as FigPaginationWrapper } from './src/components/pagination/paginationWrapper/PaginationWrapper.vue';
+export { default as FigPaginationBar } from './src/components/pagination/paginationBar/PaginationBar.vue';
+export { default as FigPaginationNav } from './src/components/pagination/paginationNav/PaginationNav.vue';
+export { default as FigPaginationWrapper } from './src/components/pagination/paginationWrapper/PaginationWrapper.vue';
 export { default as FigPaymentTypeChooser } from './src/components/paymentTypeChooser/PaymentTypeChooser.vue';
 export { default as FigPercentage } from './src/components/percentage/Percentage.vue';
 // export { default as FigPhotoManager } from './src/components/photoManager/PhotoManager.vue';

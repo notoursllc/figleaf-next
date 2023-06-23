@@ -37,6 +37,7 @@ export default {
     'Last name': 'Last name',
 
     '{num} / page': '{num} / page',
+    '{num} result | {num} results': '{num} result | {num} results',
     'New item': 'New item',
     'No': 'No',
     'No results': 'No results',
@@ -45,6 +46,7 @@ export default {
     'OK': 'OK',
 
     'PayPal': 'PayPal',
+    'Per page': 'Per page',
     'Phone number': 'Phone number',
     'Please enter a valid email address.': 'Please enter a valid email address.',
     'Please make sure your mailing address is correct to ensure accurate delivery.': 'Please make sure your mailing address is correct to ensure accurate delivery.',
