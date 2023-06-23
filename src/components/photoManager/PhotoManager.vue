@@ -1,5 +1,12 @@
 <script>
-import draggable from 'vuedraggable';
+export default {
+    name: 'FigPhotoManager'
+}
+</script>
+
+<script setup>
+import { reactive, ref, computed, watch } from 'vue';
+import { VueDraggableNext as draggable } from 'vue-draggable-next';
 import {
     FigFormTextarea,
     FigNuxtImgBunny,
@@ -11,130 +18,105 @@ import {
     FigIcon
 } from '../../index.js';
 
-export default {
-    components: {
-        draggable,
-        FigPopConfirm,
-        FigButton,
-        FigFormInput,
-        FigIcon,
-        FigTag,
-        FigModal,
-        FigNuxtImgBunny,
-        FigFormTextarea
-    },
-
-    props: {
-        value: {
-            type: Array,
-            default: function() {
-                return [];
-            }
-        },
-
-        propertyPlaceholder: {
-            type: String,
-            default: null
-        },
-
-        valuePlaceholder: {
-            type: String,
-            default: function() {
-                return this.$t('Value');
-            }
-        },
-
-        isSortable: {
-            type: Boolean,
-            default: true
+const props = defineProps({
+    modelValue: {
+        type: Array,
+        default: function() {
+            return [];
         }
     },
 
-    data: function() {
-        return {
-            newdata: [],
-            previewUrl: 'https://i.etsystatic.com/38025827/r/il/7d168e/4267350777/il_570xN.4267350777_9nj1.jpg',
-            editModal: {
-                imageUrl: null,
-                altText: null
-            }
-        };
+    propertyPlaceholder: {
+        type: String,
+        default: null
     },
 
-    computed: {
-        canSortRows() {
-            return this.isSortable && this.newdata.length > 1;
-        },
+    isSortable: {
+        type: Boolean,
+        default: true
+    }
+});
 
-        densityClass() {
-            return `meta-data-row-${this.density}`;
-        }
-    },
+const emit = defineEmits([
+    'update:modelValue'
+]);
 
-    watch: {
-        value: {
-            handler(newVal) {
-                this.newdata = Array.isArray(newVal) ? newVal : [];
+const newdata = ref([]);
+const previewUrl = ref('https://i.etsystatic.com/38025827/r/il/7d168e/4267350777/il_570xN.4267350777_9nj1.jpg');
 
-                if(!this.newdata.length) {
-                    this.addNewItem();
-                }
-            },
-            immediate: true
-        }
-    },
+const previewModal = ref(null);
+const editModal = ref(null);
+const editModalData = reactive({
+    imageUrl: null,
+    altText: null
+});
 
-    methods: {
-        showPreviewModal(url) {
-            this.previewUrl = url;
-            this.$refs.previewModal.show();
-        },
+const canSortRows = computed(() => {
+    return isSortable && newdata.value.length > 1;
+});
 
-        showEditModal(url) {
-            this.previewUrl = url;
-            this.$refs.editModal.show();
-        },
+const densityClass = computed(() => {
+    return `meta-data-row-${density}`;
+});
 
-        emitInput() {
-            if(!this.newdata.length) {
-                this.$emit('input', null);
-                return;
-            }
+function showPreviewModal(url) {
+    previewUrl.value = url;
+    previewModal.value.show();
+}
 
-            this.$emit('input', this.newdata);
-        },
+function showEditModal(url) {
+    previewUrl.value = url;
+    editModal.value.show();
+}
 
-        sanitize() {
-            let i = this.newdata.length;
-            while (i--) {
-                if(!this.newdata[i].property && !this.newdata[i].value) {
-                    this.newdata.splice(i, 1);
-                }
-            }
-        },
+function emitInput() {
+    emit(
+        'update:modelValue', 
+        !newdata.value.length ? null : newdata.value
+    );
+}
 
-        onInputChange() {
-            this.sanitize();
-            this.emitInput();
-        },
-
-        onClickDeleteRow(index) {
-            this.newdata.splice(index, 1);
-            this.sanitize();
-            this.emitInput();
-
-            if(!this.newdata.length) {
-                this.addNewItem();
-            }
-        },
-
-        addNewItem() {
-            this.newdata.push(
-                { property: null, value: null }
-            );
+function sanitize() {
+    let i = newdata.value.length;
+    while (i--) {
+        if(!newdata.value[i].property && !newdata.value[i].value) {
+            newdata.value.splice(i, 1);
         }
     }
-};
+}
+
+function onInputChange() {
+    sanitize();
+    emitInput();
+}
+
+function addNewItem() {
+    newdata.value.push(
+        { property: null, value: null }
+    );
+}
+
+function onClickDeleteRow(index) {
+    newdata.value.splice(index, 1);
+    sanitize();
+    emitInput();
+
+    if(!newdata.value.length) {
+        addNewItem();
+    }
+}
+
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        newdata.value = Array.isArray(newVal) ? newVal : [];
+
+        if(!newdata.value.length) {
+            addNewItem();
+        }
+    },
+    { immediate: true }
+)
 </script>
 
 
@@ -143,12 +125,11 @@ export default {
         <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
 
             <draggable
-                v-model="newdata"
+                :list="newdata"
                 handle=".meta-row-handle"
-                @update="emitInput"
+                @change="emitInput"
                 ghost-class="ghost"
-                class="inline-block"
-                tag="div">
+                class="inline-block">
 
                 <div v-for="(obj, index) in newdata" :key="index" class="fig-photomgr-card">
                     <div class="fig-photomgr-placeholder">
@@ -219,7 +200,7 @@ export default {
                 <fig-form-textarea
                     rows="4"
                     maxlength="250"
-                    v-model="editModal.altText"
+                    v-model="editModalData.altText"
                     :placeholder="$t('Alt text')" />
             </div>
         </fig-modal>

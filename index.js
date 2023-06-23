@@ -29,7 +29,7 @@ export { default as FigFormInputDate } from './src/components/form/date/FormInpu
 export { default as FigFormInputEndcapper } from './src/components/form/endcapper/FormInputEndcapper.vue';
 export { default as FigFormInputFileButton } from './src/components/form/fileButton/FormInputFileButton.vue';
 export { default as FigFormInputMoney } from './src/components/form/money/FormInputMoney.vue';
-export { default as FigFormMultiSelect } from './src/components/form/multiSelect/FormMultiSelect.vue';
+export { default as FigFormMultiSelect } from './src/components/form/multiselect/FormMultiSelect.vue';
 export { default as FigFormInputNumber } from './src/components/form/number/FormInputNumber.vue';
 export { default as FigFormInputToggle } from './src/components/form/toggle/FormInputToggle.vue';
 export { default as FigFormRadio } from './src/components/form/radio/FormRadio.vue';
@@ -67,7 +67,7 @@ export { default as FigModal } from './src/components/modal/Modal.vue';
 export { default as FigMetaDataBuilder } from './src/components/metaDataBuilder/MetaDataBuilder.vue'
 export { default as FigMoney } from './src/components/money/Money.vue';
 
-// export { default as FigNuxtImgBunny } from './src/components/nuxtImgBunny/NuxtImgBunny.vue';
+export { default as FigNuxtImgBunny } from './src/components/nuxtImgBunny/NuxtImgBunny.vue';
 
 export { default as FigOperationsDropdown } from './src/components/operationsDropdown/OperationsDropdown.vue';
 export { default as FigOverlay } from './src/components/overlay/Overlay.vue';
@@ -77,7 +77,7 @@ export { default as FigPaginationNav } from './src/components/pagination/paginat
 export { default as FigPaginationWrapper } from './src/components/pagination/paginationWrapper/PaginationWrapper.vue';
 export { default as FigPaymentTypeChooser } from './src/components/paymentTypeChooser/PaymentTypeChooser.vue';
 export { default as FigPercentage } from './src/components/percentage/Percentage.vue';
-// export { default as FigPhotoManager } from './src/components/photoManager/PhotoManager.vue';
+export { default as FigPhotoManager } from './src/components/photoManager/PhotoManager.vue';
 export { default as FigProductGrid } from './src/components/productGrid/ProductGrid.vue';
 export { default as FigPopover } from './src/components/popover/Popover.vue';
 export { default as FigPopoverDivider } from './src/components/popover/PopoverDivider.vue';
@@ -106,7 +106,7 @@ export { default as FigTexasToast } from './src/components/texasToast/TexasToast
 export { default as FigTextCard } from './src/components/textCard/TextCard.vue';
 export { default as FigTooltip } from './src/components/tooltip/Tooltip.vue';
 
-export { default as FigVNodes } from './src/components/vNodes/VNodes.vue';
+export { default as FigVNodes } from './src/components/vnodes/VNodes.vue';
 
 export { default as FigYouTube } from './src/components/youtube/Youtube.vue';
 
@@ -114,7 +114,7 @@ export { default as FigYouTube } from './src/components/youtube/Youtube.vue';
 // export { default as FigResizeObserverDirective } from './src/directives/resizeObserver/resizeObserver.js';
 
 // composition functions
-// export { default as FigUseCountry } from './src/components/country/useCountry.js';
+export { default as FigUseCountry } from './src/components/country/useCountry.js';
 // export { default as FigUseUtils } from './src/composables/useUtils.js';
 export { default as FigUseTime } from './src/composables/useTime.js';
-// export { default as FigUseCurrency } from './src/components/currency/useCurrency.js';
+export { default as FigUseCurrency } from './src/components/currency/useCurrency.js';
